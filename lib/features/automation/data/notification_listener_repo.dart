@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:finance_app/features/automation/domain/models/parsed_transaction.dart';
+import 'package:finance_app/features/automation/domain/notification_parser.dart';
 import 'package:finance_app/features/automation/domain/payment_app_filter.dart';
 import 'package:finance_app/features/automation/sms_parser/bank_sms_parser.dart';
 
@@ -7,11 +8,14 @@ import 'package:finance_app/features/automation/sms_parser/bank_sms_parser.dart'
 class NotificationListenerRepo {
   NotificationListenerRepo({
     BankSmsParser? parser,
+    NotificationParser? notificationParser,
     bool initialPermissionGranted = false,
   })  : _parser = parser ?? const BankSmsParser(),
+        _notificationParser = notificationParser ?? const NotificationParser(),
         _mockPermissionGranted = initialPermissionGranted;
 
   final BankSmsParser _parser;
+  final NotificationParser _notificationParser;
   final StreamController<ParsedTransaction> _transactionStreamController =
       StreamController<ParsedTransaction>.broadcast();
 
@@ -55,9 +59,19 @@ class NotificationListenerRepo {
     }
 
     final String fullText = '$title $content';
-    final ParsedTransaction? parsed = _parser.parse(
+    final DateTime now = timestamp ?? DateTime.now();
+
+    // 1. Try deterministic notification parser
+    ParsedTransaction? parsed = _notificationParser.parse(
       fullText,
-      receivedAt: timestamp ?? DateTime.now(),
+      packageName: packageName,
+      timestamp: now,
+    );
+
+    // 2. Fallback to general bank SMS parser
+    parsed ??= _parser.parse(
+      fullText,
+      receivedAt: now,
     );
 
     if (parsed != null) {
