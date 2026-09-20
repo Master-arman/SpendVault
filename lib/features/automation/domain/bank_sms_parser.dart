@@ -3,7 +3,7 @@ import 'package:finance_app/features/automation/domain/models/parsed_transaction
 import 'package:finance_app/features/automation/domain/notification_parser.dart';
 
 /// Direct Bank SMS listener & fallback parser engine.
-/// Extracts financial debit alerts from major banking codes (e.g., HDFCBK, SBIINB, AXISBK, ICICIB).
+/// Extracts financial debit/credit alerts from Indian banking codes (e.g., HDFCBK, SBIINB, AXISBK, ICICIB).
 class BankSmsParser {
   const BankSmsParser();
 
@@ -20,19 +20,23 @@ class BankSmsParser {
     'INDUSB',
     'YESBNK',
     'BOIBNK',
+    'BOBTXN',
     'FEDBNK',
+    'IDFCFB',
+    'RBLBNK',
+    'PAYTM',
+    'AIRTEL',
   ];
 
-  /// Comprehensive regex for detecting debit transactions across bank SMS formats:
-  /// Captures: Group 1: Amount, Group 2: Account/Card, Group 3: Merchant/Payee.
+  /// Comprehensive regex for detecting debit transactions across bank SMS formats.
   static final RegExp debitRegex = RegExp(
-    r'(?:debited\s+by|spent|vpa|paid|transferred\s+rs\.?)\s*(?:rs\.?|inr|₹|usd|\$|eur|€|gbp|£)?\s*([\d,]+(?:\.\d{2})?)\s*(?:from|on)?\s*(?:a\/c|ac|card)?\s*([x\d\*]+)?\s*(?:to|at|info|towards)\s+([^.\n]+)',
+    r'(?:debited\s*(?:by|with|from)?|spent\s*(?:on)?|vpa|paid|transferred\s*rs\.?|sent)\s*(?:rs\.?|inr|₹|usd|\$|eur|€|gbp|£)?\s*([\d,]+(?:\.\d{2})?)\s*(?:from|on|at)?\s*(?:a\/c|ac|account|card|wallet\/bank\s*a\/c)?\s*(?:ending)?\s*([x\d\*]+)?\s*(?:to|at|info|towards|for)?\s+([^.\n]+)',
     caseSensitive: false,
   );
 
   /// Supplementary credit regex pattern for incoming bank deposits/credits.
   static final RegExp creditRegex = RegExp(
-    r'(?:credited\s+with|deposited|received|transferred\s+to\s+your\s+a\/c)\s*(?:rs\.?|inr|₹|usd|\$|eur|€|gbp|£)?\s*([\d,]+(?:\.\d{2})?)\s*(?:to|in)?\s*(?:a\/c|ac)?\s*([x\d\*]+)?\s*(?:from|by|info)\s+([^.\n]+)',
+    r'(?:credited\s*(?:with|by|to)?|deposited|received|transferred\s*to\s*your\s*a\/c)\s*(?:rs\.?|inr|₹|usd|\$|eur|€|gbp|£)?\s*([\d,]+(?:\.\d{2})?)\s*(?:to|in|from|by|on)?\s*(?:your)?\s*(?:a\/c|ac|account)?\s*(?:ending)?\s*([x\d\*]+)?\s*(?:from|by|info|towards)?\s+([^.\n]+)',
     caseSensitive: false,
   );
 
@@ -64,19 +68,14 @@ class BankSmsParser {
 
     // 1. Try primary comprehensive debit regex
     final RegExpMatch? debitMatch = debitRegex.firstMatch(cleanText);
-    if (debitMatch != null) {
+    if (debitMatch != null && !_isExplicitCredit(cleanText)) {
       final double? amount = NotificationParser.normalizeAmount(debitMatch.group(1));
       if (amount != null && amount > 0) {
         String? rawAccount = debitMatch.group(2)?.trim();
         rawAccount ??= RegexPatterns.maskedAccount.firstMatch(cleanText)?.group(1);
 
         final String rawMerchant = debitMatch.group(3) ?? '';
-        String merchant = _cleanMerchant(rawMerchant);
-        if (merchant.isEmpty) {
-          merchant = RegexPatterns.merchantName.firstMatch(cleanText)?.group(1)?.trim() ??
-              (sender ?? 'Bank Debit');
-        }
-
+        final String merchant = _resolveMerchant(cleanText, rawMerchant, sender ?? 'Bank Debit');
         final String? reference = RegexPatterns.referenceNumber.firstMatch(cleanText)?.group(1);
 
         return ParsedTransaction(
@@ -101,12 +100,7 @@ class BankSmsParser {
         rawAccount ??= RegexPatterns.maskedAccount.firstMatch(cleanText)?.group(1);
 
         final String rawMerchant = creditMatch.group(3) ?? '';
-        String merchant = _cleanMerchant(rawMerchant);
-        if (merchant.isEmpty) {
-          merchant = RegexPatterns.merchantName.firstMatch(cleanText)?.group(1)?.trim() ??
-              (sender ?? 'Bank Credit');
-        }
-
+        final String merchant = _resolveMerchant(cleanText, rawMerchant, sender ?? 'Bank Credit');
         final String? reference = RegexPatterns.referenceNumber.firstMatch(cleanText)?.group(1);
 
         return ParsedTransaction(
@@ -125,18 +119,17 @@ class BankSmsParser {
     // 3. Fallback heuristic pattern matching
     final double? fallbackAmount = _extractFallbackAmount(cleanText);
     if (fallbackAmount != null && fallbackAmount > 0) {
-      final bool isCredit = cleanText.toLowerCase().contains('credited') ||
-          cleanText.toLowerCase().contains('received');
+      final bool isCredit = _isExplicitCredit(cleanText);
       final String? account = RegexPatterns.maskedAccount.firstMatch(cleanText)?.group(1);
       final String? reference = RegexPatterns.referenceNumber.firstMatch(cleanText)?.group(1);
-      final String? merchant = RegexPatterns.merchantName.firstMatch(cleanText)?.group(1)?.trim();
+      final String merchant = _resolveMerchant(cleanText, '', sender ?? (isCredit ? 'Bank Credit' : 'Bank Debit'));
 
       return ParsedTransaction(
         amount: fallbackAmount,
         type: isCredit ? TransactionType.credit : TransactionType.debit,
         accountMasked: account,
         referenceNumber: reference,
-        merchant: merchant ?? sender ?? (isCredit ? 'Bank Credit' : 'Bank Debit'),
+        merchant: merchant,
         currency: currency,
         rawMessage: smsBody,
         timestamp: receivedAt ?? DateTime.now(),
@@ -144,6 +137,15 @@ class BankSmsParser {
     }
 
     return null;
+  }
+
+  static bool _isExplicitCredit(String text) {
+    final lower = text.toLowerCase();
+    return lower.contains('credited') ||
+        lower.contains('received in') ||
+        lower.contains('deposited') ||
+        lower.contains('refunded') ||
+        lower.contains('cashback');
   }
 
   static double? _extractFallbackAmount(String text) {
@@ -158,8 +160,50 @@ class BankSmsParser {
     return null;
   }
 
+  static String _resolveMerchant(String fullText, String capturedRaw, String fallback) {
+    String merchant = _cleanMerchant(capturedRaw);
+    if (merchant.isNotEmpty && !_isDateString(merchant)) {
+      return merchant;
+    }
+
+    // Check specific Info:/towards/to/from/at tokens in fullText
+    final RegExp explicitTokens = RegExp(
+      r'(?:info\s*[:\-]|towards|to|at|from|by)\s+([A-Za-z0-9\s&_\.\-]{2,30})(?:\s+on|\s+via|\s+ref|\s+avail|\s+upi|\.|$)',
+      caseSensitive: false,
+    );
+    final matches = explicitTokens.allMatches(fullText);
+    for (final m in matches) {
+      final candidate = _cleanMerchant(m.group(1) ?? '');
+      if (candidate.isNotEmpty && !_isDateString(candidate) && !_isNoise(candidate)) {
+        return candidate;
+      }
+    }
+
+    return fallback;
+  }
+
+  static bool _isDateString(String s) {
+    final lower = s.toLowerCase().trim();
+    return RegExp(r'^\d{1,2}[\/\-\.]\w{3,}[\/\-\.]\d{2,4}$').hasMatch(lower) ||
+        RegExp(r'^\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}$').hasMatch(lower) ||
+        RegExp(r'^\d{1,2}\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)', caseSensitive: false).hasMatch(lower);
+  }
+
+  static bool _isNoise(String s) {
+    final lower = s.toLowerCase().trim();
+    return lower.startsWith('your') ||
+        lower.startsWith('a/c') ||
+        lower.startsWith('acct') ||
+        lower.startsWith('axis bank') ||
+        lower.startsWith('hdfc') ||
+        lower.startsWith('sbi');
+  }
+
   static String _cleanMerchant(String raw) {
     return raw
+        .replaceAll(RegExp(r'(?:info\s*[:\-])\s*', caseSensitive: false), '')
+        .replaceAll(RegExp(r'(?:via\s+upi.*)$', caseSensitive: false), '')
+        .replaceAll(RegExp(r'(?:upi\s+ref.*)$', caseSensitive: false), '')
         .replaceAll(RegExp(r'(?:Avl|Avail|Available)\s+Bal.*$', caseSensitive: false), '')
         .replaceAll(RegExp(r'(?:Ref|Reference|UTR|Txn).*$', caseSensitive: false), '')
         .replaceAll(RegExp(r'[\.\,\!]+$'), '')
