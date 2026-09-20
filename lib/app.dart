@@ -28,6 +28,7 @@ import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class FinanceApp extends StatefulWidget {
   const FinanceApp({super.key});
@@ -43,6 +44,7 @@ class _FinanceAppState extends State<FinanceApp> {
     // Lock the app on cold start so the user must authenticate before seeing
     // any financial data. This is done asynchronously after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      FlutterNativeSplash.remove();
       final bool available =
           await BiometricAuthService.instance.isAvailable();
       if (available) {
