@@ -16,6 +16,28 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
+    val p = this
+    if (p.name != "app") {
+        p.afterEvaluate {
+            val androidExt = p.extensions.findByName("android")
+            if (androidExt != null) {
+                try {
+                    val getNamespace = androidExt.javaClass.getMethod("getNamespace")
+                    val setNamespace = androidExt.javaClass.getMethod("setNamespace", String::class.java)
+                    val current = getNamespace.invoke(androidExt)
+                    if (current == null) {
+                        val fallbackNamespace = "dev.isar." + p.name.replace("-", "_").replace(":", "_")
+                        setNamespace.invoke(androidExt, fallbackNamespace)
+                    }
+                } catch (e: Exception) {
+                    // Ignore
+                }
+            }
+        }
+    }
+}
+
+subprojects {
     project.evaluationDependsOn(":app")
 }
 

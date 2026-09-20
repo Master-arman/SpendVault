@@ -1,9 +1,5 @@
-enum BillingCycle {
-  weekly,
-  monthly,
-  quarterly,
-  yearly,
-}
+import 'package:finance_app/features/subscriptions/data/models/subscription.dart' show BillingCycle;
+export 'package:finance_app/features/subscriptions/data/models/subscription.dart' show BillingCycle;
 
 /// Domain entity representing a recurring subscription.
 class SubscriptionModel {
