@@ -50,8 +50,8 @@ void main() {
       expect(find.text('Split Bill & Reimburse'), findsOneWidget);
       expect(find.text('YOUR SHARE'), findsOneWidget);
       expect(find.text('LENT AMOUNT'), findsOneWidget);
-      expect(find.text('\$30.00'), findsWidgets); // User Share
-      expect(find.text('\$90.00'), findsOneWidget); // Lent Amount
+      expect(find.text('₹30.00'), findsWidgets); // User Share
+      expect(find.text('₹90.00'), findsOneWidget); // Lent Amount
       expect(find.text('#split'), findsOneWidget);
       expect(find.text('#reimbursable'), findsOneWidget);
 

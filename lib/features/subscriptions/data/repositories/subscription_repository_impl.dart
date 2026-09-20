@@ -6,7 +6,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     SubscriptionModel(
       id: 'sub-1',
       name: 'Netflix Premium (4K)',
-      amount: 22.99,
+      amount: 649.00,
       cycle: BillingCycle.monthly,
       nextBillingDate: DateTime.now().add(const Duration(days: 8)),
       categoryName: 'Entertainment',
@@ -14,7 +14,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     SubscriptionModel(
       id: 'sub-2',
       name: 'Spotify Family',
-      amount: 16.99,
+      amount: 179.00,
       cycle: BillingCycle.monthly,
       nextBillingDate: DateTime.now().add(const Duration(days: 14)),
       categoryName: 'Entertainment',
@@ -22,7 +22,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     SubscriptionModel(
       id: 'sub-3',
       name: 'GitHub Copilot / Cloud',
-      amount: 19.00,
+      amount: 820.00,
       cycle: BillingCycle.monthly,
       nextBillingDate: DateTime.now().add(const Duration(days: 21)),
       categoryName: 'Development',
@@ -30,7 +30,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     SubscriptionModel(
       id: 'sub-4',
       name: 'Amazon Prime Annual',
-      amount: 139.00,
+      amount: 1499.00,
       cycle: BillingCycle.yearly,
       nextBillingDate: DateTime.now().add(const Duration(days: 160)),
       categoryName: 'Shopping',

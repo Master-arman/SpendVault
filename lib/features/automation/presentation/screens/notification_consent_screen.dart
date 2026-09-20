@@ -416,14 +416,7 @@ class _ShieldIllustrationPainter extends CustomPainter {
     shieldPath.close();
 
     final Paint shieldFill = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color(0xFF6366F1),
-          Color(0xFF8B5CF6),
-        ],
-      ).createShader(Rect.fromLTWH(left, top, w, h));
+      ..shader = AppColors.primaryGradient.createShader(Rect.fromLTWH(left, top, w, h));
 
     final Paint shieldBorder = Paint()
       ..color = Colors.white.withValues(alpha: 0.4)

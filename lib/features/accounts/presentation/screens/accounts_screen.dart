@@ -1,4 +1,5 @@
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/accounts/data/models/account.dart' as isar_model;
 import 'package:finance_app/features/accounts/data/repositories/account_repository_impl.dart';
 import 'package:finance_app/features/accounts/domain/models/account_model.dart' as domain_model;
@@ -41,7 +42,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
         ..last4Digits = a.accountNumberMasked.replaceAll('*', '')
         ..colorHex = a.type == domain_model.AccountType.creditCard
             ? 0xFFEC4899
-            : (a.isDefault ? 0xFF6366F1 : 0xFF0D9488)
+            : (a.isDefault ? 0xFF14B8A6 : 0xFF0D9488)
         ..isDefault = a.isDefault;
       return acc;
     }).toList();
@@ -65,6 +66,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
         ),
         actions: [
+          const ThemeToggleButton(),
           IconButton(
             icon: const Icon(Icons.add_rounded, color: AppColors.indigoLight),
             tooltip: 'Add Account',

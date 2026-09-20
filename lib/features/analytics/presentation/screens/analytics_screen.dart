@@ -1,5 +1,6 @@
 import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/analytics/presentation/controllers/timespan_controller.dart';
 import 'package:finance_app/features/analytics/presentation/widgets/category_pie_chart.dart';
 import 'package:finance_app/features/analytics/presentation/widgets/monthly_bar_chart.dart';
@@ -60,6 +61,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           'Spending Analytics',
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -147,7 +152,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total Inflow', style: TextStyle(color: AppColors.textSecondary)),
-                      Text('\$6,850.00', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.successGreen)),
+                      Text('₹6,850.00', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.successGreen)),
                     ],
                   ),
                   SizedBox(height: 8),
@@ -155,7 +160,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Total Outflow', style: TextStyle(color: AppColors.textSecondary)),
-                      Text('\$5,120.00', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.expenseRed)),
+                      Text('₹5,120.00', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.expenseRed)),
                     ],
                   ),
                   Divider(height: 20),
@@ -163,7 +168,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Net Savings', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
-                      Text('+\$1,730.00', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.indigoLight)),
+                      Text('+₹1,730.00', style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.indigoLight)),
                     ],
                   ),
                 ],

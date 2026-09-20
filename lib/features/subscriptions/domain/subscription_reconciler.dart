@@ -191,6 +191,8 @@ class SubscriptionReconciler {
       ..tags = [
         'subscription',
         'recurring',
+        '#subscription_${subscription.id}',
+        'subscription_${subscription.id}',
         'auto-reconciled',
         subscription.name.toLowerCase().trim(),
       ];
@@ -232,6 +234,8 @@ class SubscriptionReconciler {
       ..tags = [
         'subscription',
         'recurring',
+        '#subscription_${model.id}',
+        'subscription_${model.id}',
         'auto-reconciled',
         model.name.toLowerCase().trim(),
       ];

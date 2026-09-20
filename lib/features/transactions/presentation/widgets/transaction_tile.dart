@@ -16,14 +16,15 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final bool isIncome = transaction.isIncome;
     final DateFormat formatter = DateFormat('MMM d, h:mm a');
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceCard,
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderStroke),
+        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.25)),
       ),
       child: Material(
         color: Colors.transparent,
@@ -57,10 +58,10 @@ class TransactionTile extends StatelessWidget {
                     children: [
                       Text(
                         transaction.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -68,14 +69,14 @@ class TransactionTile extends StatelessWidget {
                         children: [
                           Text(
                             formatter.format(transaction.date),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.textMuted,
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                           if (transaction.isAutomated) ...[
                             const SizedBox(width: 6),
-                            const Text('•', style: TextStyle(color: AppColors.textMuted, fontSize: 10)),
+                            Text('•', style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 10)),
                             const SizedBox(width: 6),
                             const Icon(Icons.bolt_rounded, size: 12, color: AppColors.indigoLight),
                             const SizedBox(width: 2),
@@ -94,7 +95,7 @@ class TransactionTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: isIncome ? AppColors.successGreen : AppColors.textPrimary,
+                    color: isIncome ? AppColors.successGreen : theme.colorScheme.onSurface,
                   ),
                 ),
               ],

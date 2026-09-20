@@ -111,7 +111,7 @@ class AccountCard extends StatelessWidget {
                 Text(
                   CurrencyFormatter.format(
                     account.balance,
-                    currencySymbol: '\$',
+                    currencySymbol: '₹',
                   ),
                   style: TextStyle(
                     fontSize: 22,

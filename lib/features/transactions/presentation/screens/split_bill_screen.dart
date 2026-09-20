@@ -1,4 +1,5 @@
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/utils/currency_formatter.dart';
 import 'package:finance_app/features/transactions/domain/bill_split_calculator.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/services.dart';
 class SplitBillScreen extends StatefulWidget {
   const SplitBillScreen({
     super.key,
-    this.initialBillAmount = 120.0,
+    this.initialBillAmount = 1200.0,
     this.initialParticipants = 4,
     this.categoryName = 'Food & Dining',
   });
@@ -105,6 +106,10 @@ class _SplitBillScreenState extends State<SplitBillScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Split Bill & Reimburse'),
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -135,7 +140,7 @@ class _SplitBillScreenState extends State<SplitBillScreen> {
                   Row(
                     children: [
                       const Text(
-                        '\$',
+                        '₹',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,

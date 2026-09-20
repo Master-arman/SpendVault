@@ -1,4 +1,6 @@
+import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/widgets/staggered_list_wrapper.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
@@ -39,6 +41,18 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Transactions'),
+        actions: [
+          IconButton(
+            key: const Key('open_search_button'),
+            icon: const Icon(Icons.search_rounded),
+            tooltip: 'Search Transactions',
+            onPressed: () {
+              Navigator.of(context).pushNamed(AppConstants.searchRoute);
+            },
+          ),
+          const ThemeToggleButton(),
+          const SizedBox(width: 8),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))

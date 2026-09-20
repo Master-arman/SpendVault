@@ -36,6 +36,9 @@ class Subscription {
   /// Active status flag of the subscription.
   bool isActive = true;
 
+  /// Phase 37: Auto-Log on Renewal Date pipeline flag.
+  bool autoLogOnRenewal = false;
+
   /// Linked expense category.
   final category = IsarLink<Category>();
 

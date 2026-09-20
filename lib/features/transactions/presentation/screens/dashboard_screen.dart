@@ -2,12 +2,14 @@ import 'dart:ui';
 import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/interactive_card.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/utils/currency_formatter.dart';
 import 'package:finance_app/core/widgets/rolling_counter.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_tile.dart';
+import 'package:finance_app/features/reports/domain/pdf_statement_generator.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -31,8 +33,8 @@ class FastActionItem {
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
     super.key,
-    this.initialNetWorth = 51830.35,
-    this.sevenDaysSpend = const [45.0, 120.0, 85.0, 240.0, 110.0, 310.0, 195.0],
+    this.initialNetWorth = 231150.75,
+    this.sevenDaysSpend = const [450.0, 1200.0, 850.0, 2400.0, 1100.0, 3100.0, 1950.0],
   });
 
   final double initialNetWorth;
@@ -107,9 +109,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         label: 'Export Report',
         icon: Icons.file_download_outlined,
         color: AppColors.successGreen,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Exporting Financial Ledger Report (PDF/CSV)...')),
+        onTap: () async {
+          final txns = await _repository.getTransactions();
+          await PdfStatementGenerator.shareStatement(
+            transactions: txns,
+            accountName: 'Executive Portfolio',
+            filename: 'statement.pdf',
           );
         },
       ),
@@ -123,12 +128,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Sticky Glassmorphic App Bar showing aggregated Net Worth
+          // Sticky App Bar showing aggregated Net Worth
           SliverAppBar(
             pinned: true,
             expandedHeight: 180,
-            backgroundColor: AppColors.darkSlateBackground.withValues(alpha: 0.85),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.85),
             elevation: 0,
+            actions: const [
+              ThemeToggleButton(),
+              SizedBox(width: 8),
+            ],
             flexibleSpace: ClipRRect(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
@@ -139,13 +148,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          AppColors.accentIndigo.withValues(alpha: 0.18),
-                          AppColors.darkSlateBackground.withValues(alpha: 0.9),
+                          AppColors.accentIndigo.withValues(alpha: 0.12),
+                          Theme.of(context).scaffoldBackgroundColor,
                         ],
                       ),
-                      border: const Border(
+                      border: Border(
                         bottom: BorderSide(
-                          color: AppColors.borderStroke,
+                          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),

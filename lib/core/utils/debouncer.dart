@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 
 /// A utility to debounce rapid action calls, preventing redundant processing.
 class Debouncer {
-  Debouncer({this.duration = const Duration(milliseconds: 300)});
+  Debouncer({int? milliseconds, Duration? duration})
+      : duration = duration ?? Duration(milliseconds: milliseconds ?? 300);
 
   final Duration duration;
   Timer? _timer;

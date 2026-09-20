@@ -17,6 +17,7 @@ class AddSubscriptionScreen extends StatefulWidget {
     this.initialReminderDays = 3,
     this.currencySymbol = '₹',
     this.onSave,
+    this.initialAutoLog = false,
   });
 
   final String initialName;
@@ -24,6 +25,7 @@ class AddSubscriptionScreen extends StatefulWidget {
   final BillingCycle initialCycle;
   final DateTime? initialNextBillingDate;
   final int initialReminderDays;
+  final bool initialAutoLog;
   final String currencySymbol;
   final Future<void> Function(Subscription subscription)? onSave;
 
@@ -39,6 +41,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   late BillingCycle _selectedCycle;
   late DateTime _nextBillingDate;
   late int _reminderDaysBefore;
+  late bool _autoLogOnRenewal;
   String _selectedCategory = 'Entertainment';
   String _selectedAccount = 'HDFC Bank';
   bool _isSubmitting = false;
@@ -120,6 +123,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
     _nextBillingDate = widget.initialNextBillingDate ??
         DateTime.now().add(const Duration(days: 30));
     _reminderDaysBefore = widget.initialReminderDays;
+    _autoLogOnRenewal = widget.initialAutoLog;
 
     _amountController.addListener(_onAmountChanged);
   }
@@ -226,6 +230,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       ..cycle = _selectedCycle
       ..nextBillingDate = _nextBillingDate
       ..reminderDaysBefore = _reminderDaysBefore
+      ..autoLogOnRenewal = _autoLogOnRenewal
       ..isActive = true;
 
     try {
@@ -828,6 +833,47 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                   },
                 ),
               ),
+            ),
+            const SizedBox(height: 16),
+            const Divider(color: AppColors.borderStroke),
+            const SizedBox(height: 12),
+            // Phase 37: Auto-Log on Renewal Date Toggle
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Auto-Log on Renewal Date',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Automatically record transaction & deduct ledger balance on billing date without manual prompt',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Switch.adaptive(
+                  key: const Key('switch_auto_log_renewal'),
+                  value: _autoLogOnRenewal,
+                  activeColor: AppColors.accentIndigo,
+                  onChanged: (bool val) {
+                    HapticFeedback.selectionClick();
+                    setState(() => _autoLogOnRenewal = val);
+                  },
+                ),
+              ],
             ),
           ],
         ),

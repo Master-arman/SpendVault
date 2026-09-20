@@ -9,11 +9,17 @@ import 'package:finance_app/features/automation/presentation/screens/notificatio
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
+import 'package:finance_app/features/subscriptions/data/models/subscription.dart';
+import 'package:finance_app/features/subscriptions/domain/models/subscription_model.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/add_subscription_screen.dart';
+import 'package:finance_app/features/subscriptions/presentation/screens/subscription_detail_screen.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/subscriptions_screen.dart';
+import 'package:finance_app/features/transactions/data/models/transaction.dart';
 import 'package:finance_app/features/transactions/presentation/screens/filtered_transactions_screen.dart';
+import 'package:finance_app/features/transactions/presentation/screens/search_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/split_bill_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:flutter/material.dart';
 
 class FinanceApp extends StatelessWidget {
@@ -21,13 +27,16 @@ class FinanceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
-      initialRoute: AppConstants.splashRoute,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeNotifier,
+      builder: (BuildContext context, ThemeMode mode, _) {
+        return MaterialApp(
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: mode,
+          initialRoute: AppConstants.splashRoute,
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case AppConstants.splashRoute:
@@ -102,6 +111,23 @@ class FinanceApp extends StatelessWidget {
               builder: (_) => const AddSubscriptionScreen(),
               settings: settings,
             );
+          case AppConstants.subscriptionDetailRoute:
+            final Map<String, dynamic> args =
+                (settings.arguments as Map<String, dynamic>?) ?? {};
+            return MaterialPageRoute<void>(
+              builder: (_) => SubscriptionDetailScreen(
+                subscription: args['subscription'] as Subscription?,
+                subscriptionModel: args['subscriptionModel'] as SubscriptionModel?,
+                historicalTransactions:
+                    (args['historicalTransactions'] as List<Transaction>?) ?? const [],
+              ),
+              settings: settings,
+            );
+          case AppConstants.searchRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const SearchScreen(),
+              settings: settings,
+            );
           default:
             return MaterialPageRoute<void>(
               builder: (_) => const DashboardShell(),
@@ -110,6 +136,8 @@ class FinanceApp extends StatelessWidget {
         }
       },
     );
+  },
+);
   }
 }
 

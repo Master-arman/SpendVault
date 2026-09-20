@@ -4,9 +4,9 @@ class AppConstants {
 
   static const String appName = 'FinanceX';
   static const String appVersion = '1.0.0';
-  static const String defaultCurrencySymbol = '\$';
-  static const String defaultCurrencyCode = 'USD';
-  static const String defaultLocale = 'en_US';
+  static const String defaultCurrencySymbol = '₹';
+  static const String defaultCurrencyCode = 'INR';
+  static const String defaultLocale = 'en_IN';
 
   // Storage Keys
   static const String themeKey = 'app_theme_mode';
@@ -27,4 +27,6 @@ class AppConstants {
   static const String filteredTransactionsRoute = '/transactions/filtered';
   static const String splitBillRoute = '/transactions/split';
   static const String addSubscriptionRoute = '/subscriptions/add';
+  static const String subscriptionDetailRoute = '/subscriptions/detail';
+  static const String searchRoute = '/transactions/search';
 }

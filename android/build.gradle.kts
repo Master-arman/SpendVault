@@ -32,6 +32,34 @@ subprojects {
                 } catch (e: Exception) {
                     // Ignore
                 }
+                try {
+                    val method = androidExt.javaClass.methods.firstOrNull { 
+                        it.name == "setCompileSdkVersion" && it.parameterTypes.size == 1 
+                    }
+                    if (method != null) {
+                        if (method.parameterTypes[0] == Int::class.javaPrimitiveType || method.parameterTypes[0] == java.lang.Integer::class.java) {
+                            method.invoke(androidExt, 36)
+                        } else if (method.parameterTypes[0] == String::class.java) {
+                            method.invoke(androidExt, "android-36")
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Ignore
+                }
+                try {
+                    val method = androidExt.javaClass.methods.firstOrNull { 
+                        it.name == "compileSdkVersion" && it.parameterTypes.size == 1 
+                    }
+                    if (method != null) {
+                        if (method.parameterTypes[0] == Int::class.javaPrimitiveType || method.parameterTypes[0] == java.lang.Integer::class.java) {
+                            method.invoke(androidExt, 36)
+                        } else if (method.parameterTypes[0] == String::class.java) {
+                            method.invoke(androidExt, "android-36")
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Ignore
+                }
             }
         }
     }

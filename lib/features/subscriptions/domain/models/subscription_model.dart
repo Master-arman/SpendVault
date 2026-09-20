@@ -11,6 +11,9 @@ class SubscriptionModel {
     required this.nextBillingDate,
     required this.categoryName,
     this.isActive = true,
+    this.autoLogOnRenewal = false,
+    this.accountId,
+    this.accountName,
   });
 
   final String id;
@@ -20,4 +23,7 @@ class SubscriptionModel {
   final DateTime nextBillingDate;
   final String categoryName;
   final bool isActive;
+  final bool autoLogOnRenewal;
+  final String? accountId;
+  final String? accountName;
 }

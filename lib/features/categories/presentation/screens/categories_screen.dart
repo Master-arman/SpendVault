@@ -1,4 +1,5 @@
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/categories/data/repositories/category_repository_impl.dart';
 import 'package:finance_app/features/categories/domain/models/category_model.dart';
 import 'package:finance_app/features/categories/domain/repositories/category_repository.dart';
@@ -37,6 +38,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories & Budgets'),
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 8),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
@@ -78,7 +83,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             ),
                             if (category.budgetLimit != null)
                               Text(
-                                'Monthly Limit: \$${category.budgetLimit!.toStringAsFixed(0)}',
+                                'Monthly Limit: ₹${category.budgetLimit!.toStringAsFixed(0)}',
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textMuted,

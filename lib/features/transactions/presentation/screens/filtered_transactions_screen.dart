@@ -1,4 +1,5 @@
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/widgets/staggered_list_wrapper.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
@@ -74,6 +75,10 @@ class _FilteredTransactionsScreenState extends State<FilteredTransactionsScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.categoryName ?? 'Filtered Ledger'),
+        actions: const [
+          ThemeToggleButton(),
+          SizedBox(width: 8),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

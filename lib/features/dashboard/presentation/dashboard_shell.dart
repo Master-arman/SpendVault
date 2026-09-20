@@ -28,15 +28,17 @@ class _DashboardShellState extends State<DashboardShell> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
       ),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
           border: Border(
-            top: BorderSide(color: AppColors.borderStroke, width: 1),
+            top: BorderSide(color: theme.colorScheme.outline.withValues(alpha: 0.3), width: 1),
           ),
         ),
         child: BottomNavigationBar(

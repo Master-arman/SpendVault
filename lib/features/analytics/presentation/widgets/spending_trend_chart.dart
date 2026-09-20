@@ -61,7 +61,7 @@ class SpendingTrendChart extends StatelessWidget {
                 interval: 1000,
                 getTitlesWidget: (double value, TitleMeta meta) {
                   return Text(
-                    '\$${(value / 1000).toStringAsFixed(0)}k',
+                    '₹${(value / 1000).toStringAsFixed(0)}k',
                     style: const TextStyle(
                       color: AppColors.textMuted,
                       fontSize: 11,

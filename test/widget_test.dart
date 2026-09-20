@@ -15,24 +15,24 @@ void main() {
       expect(AppColors.darkSlateBackground, const Color(0xFF0A0F1D));
       expect(AppColors.surfaceCard, const Color(0xFF151D30));
       expect(AppColors.borderStroke, const Color(0xFF24304F));
-      expect(AppColors.accentIndigo, const Color(0xFF6366F1));
+      expect(AppColors.accentIndigo, const Color(0xFF14B8A6));
     });
   });
 
   group('CurrencyFormatter Tests', () {
     test('Formats currency amounts correctly', () {
-      expect(CurrencyFormatter.format(1250.50), '\$1,250.50');
-      expect(CurrencyFormatter.format(1250.50, showSign: true), '+\$1,250.50');
-      expect(CurrencyFormatter.format(-450.00), '-\$450.00');
+      expect(CurrencyFormatter.format(1250.50), '₹1,250.50');
+      expect(CurrencyFormatter.format(1250.50, showSign: true), '+₹1,250.50');
+      expect(CurrencyFormatter.format(-450.00), '-₹450.00');
     });
 
     test('Formats compact currency values', () {
-      expect(CurrencyFormatter.formatCompact(1500000), '\$1.5M');
-      expect(CurrencyFormatter.formatCompact(45000), '\$45K');
+      expect(CurrencyFormatter.formatCompact(1500000), '₹15L');
+      expect(CurrencyFormatter.formatCompact(45000), '₹45K');
     });
 
     test('Parses strings to double', () {
-      expect(CurrencyFormatter.parseAmount('\$1,250.75'), 1250.75);
+      expect(CurrencyFormatter.parseAmount('₹1,250.75'), 1250.75);
       expect(CurrencyFormatter.parseAmount('-45.20'), -45.20);
     });
   });
