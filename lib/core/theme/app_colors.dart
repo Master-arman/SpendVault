@@ -29,6 +29,16 @@ class AppColors {
   static const Color darkTextSecondary = Color(0xFF94A3B8);
   static const Color darkTextMuted = Color(0xFF64748B);
 
+  // Phase 49: Pure OLED Theme (Pitch Black for AMOLED Battery Conservation)
+  static const Color oledBackground = Color(0xFF000000);
+  static const Color oledCard = Color(0xFF0D0D0D);
+  static const Color oledBorder = Color(0xFF1E1E1E);
+  static const Color oledPrimary = Color(0xFF14B8A6);
+  static const Color oledSurfaceElevated = Color(0xFF141414);
+  static const Color oledTextPrimary = Color(0xFFFFFFFF);
+  static const Color oledTextSecondary = Color(0xFFA1A1AA);
+  static const Color oledTextMuted = Color(0xFF71717A);
+
   // Surface Elevation Tokens
   static const Color surfaceCardHover = Color(0xFF1B243B);
   static const Color surfaceCardElevated = Color(0xFF1E2942);

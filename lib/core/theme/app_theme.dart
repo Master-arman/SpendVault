@@ -297,4 +297,116 @@ class AppTheme {
       ),
     );
   }
+
+  /// Alias for deep slate navy dark theme (0xFF0A0F1D / 0xFF151D30).
+  static ThemeData get deepDarkTheme => darkTheme;
+
+  /// Phase 49: Pure OLED Theme (Pitch black 0xFF000000 for maximizing AMOLED battery life).
+  static ThemeData get oledTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.oledBackground,
+      primaryColor: AppColors.oledPrimary,
+      canvasColor: AppColors.oledBackground,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.oledPrimary,
+        onPrimary: Colors.black,
+        primaryContainer: Color(0xFF0F766E),
+        onPrimaryContainer: Color(0xFFCCFBF1),
+        secondary: AppColors.accentViolet,
+        onSecondary: Colors.black,
+        surface: AppColors.oledCard,
+        onSurface: AppColors.oledTextPrimary,
+        error: AppColors.expenseRed,
+        onError: Colors.white,
+        outline: AppColors.oledBorder,
+        outlineVariant: Color(0xFF141414),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.oledBackground,
+        foregroundColor: AppColors.oledTextPrimary,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
+        titleTextStyle: TextStyle(
+          color: AppColors.oledTextPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.3,
+        ),
+      ),
+      cardTheme: const CardThemeData(
+        color: AppColors.oledCard,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          side: BorderSide(color: AppColors.oledBorder, width: 1),
+        ),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.oledBorder,
+        thickness: 1,
+        space: 1,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.oledPrimary,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.2,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.oledCard,
+        hintStyle: const TextStyle(
+          color: AppColors.oledTextMuted,
+          fontSize: 14,
+        ),
+        labelStyle: const TextStyle(
+          color: AppColors.oledTextSecondary,
+          fontSize: 14,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.oledBorder, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: AppColors.oledBorder, width: 1),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(color: AppColors.oledPrimary, width: 1.5),
+        ),
+      ),
+    );
+  }
+
+  /// Resolves the corresponding [ThemeData] for an [AppThemeType].
+  static ThemeData getThemeData(dynamic type) {
+    if (type.toString().contains('light')) {
+      return lightTheme;
+    } else if (type.toString().contains('oledBlack')) {
+      return oledTheme;
+    } else {
+      return deepDarkTheme;
+    }
+  }
 }

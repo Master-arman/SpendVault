@@ -27,15 +27,14 @@ class FinanceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (BuildContext context, ThemeMode mode, _) {
+    return ValueListenableBuilder<AppThemeType>(
+      valueListenable: ThemeProvider.instance,
+      builder: (BuildContext context, AppThemeType themeType, _) {
         return MaterialApp(
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: mode,
+          theme: AppTheme.getThemeData(themeType),
+          themeMode: ThemeMode.light, // Uses resolved theme dynamically
           initialRoute: AppConstants.splashRoute,
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {

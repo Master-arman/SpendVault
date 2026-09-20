@@ -1,10 +1,11 @@
+import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 
-/// Global notifier managing application theme mode across all screens.
-/// Defaults to ThemeMode.light.
-final ValueNotifier<ThemeMode> appThemeNotifier = ValueNotifier<ThemeMode>(ThemeMode.light);
+/// Backward-compatible global notifier managing application theme mode across legacy screens.
+final ValueNotifier<ThemeMode> appThemeNotifier = ValueNotifier<ThemeMode>(ThemeMode.dark);
 
 /// Production-grade Theme Toggle Button for AppBar actions and Settings screens.
+/// Supports 3-state cycling: Light Mode -> Deep Slate Dark -> Pure AMOLED OLED.
 class ThemeToggleButton extends StatelessWidget {
   const ThemeToggleButton({
     super.key,
@@ -15,12 +16,26 @@ class ThemeToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: appThemeNotifier,
-      builder: (BuildContext context, ThemeMode currentMode, _) {
-        final bool isDark = currentMode == ThemeMode.dark ||
-            (currentMode == ThemeMode.system &&
-                MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    return ValueListenableBuilder<AppThemeType>(
+      valueListenable: ThemeProvider.instance,
+      builder: (BuildContext context, AppThemeType activeTheme, _) {
+        final IconData icon;
+        final String tooltipMessage;
+
+        switch (activeTheme) {
+          case AppThemeType.light:
+            icon = Icons.light_mode_rounded;
+            tooltipMessage = 'Active: Light Mode (Tap for Deep Dark)';
+            break;
+          case AppThemeType.deepDark:
+            icon = Icons.dark_mode_rounded;
+            tooltipMessage = 'Active: Deep Dark (Tap for Pure OLED)';
+            break;
+          case AppThemeType.oledBlack:
+            icon = Icons.brightness_2_rounded;
+            tooltipMessage = 'Active: Pure OLED Black (Tap for Light)';
+            break;
+        }
 
         final Widget iconButton = IconButton(
           key: const Key('theme_toggle_button'),
@@ -33,21 +48,21 @@ class ThemeToggleButton extends StatelessWidget {
               );
             },
             child: Icon(
-              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-              key: ValueKey<bool>(isDark),
+              icon,
+              key: ValueKey<AppThemeType>(activeTheme),
               size: 22,
             ),
           ),
           onPressed: () {
-            appThemeNotifier.value =
-                isDark ? ThemeMode.light : ThemeMode.dark;
+            ThemeProvider.instance.cycleTheme();
+            appThemeNotifier.value = ThemeProvider.instance.isDark ? ThemeMode.dark : ThemeMode.light;
           },
         );
 
         if (!showTooltip) return iconButton;
 
         return Tooltip(
-          message: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+          message: tooltipMessage,
           child: iconButton,
         );
       },

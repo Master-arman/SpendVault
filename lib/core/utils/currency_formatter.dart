@@ -1,58 +1,45 @@
-import 'package:intl/intl.dart';
+import 'package:finance_app/core/utils/currency_manager.dart';
 
-/// Financial and multi-currency formatting utility.
+/// Financial and multi-currency formatting utility linked with [CurrencyManager].
 class CurrencyFormatter {
   const CurrencyFormatter._();
 
   /// Formats numeric [amount] into localized currency representation (e.g. ₹1,250.50).
   static String format(
     double amount, {
-    String currencySymbol = '₹',
-    String locale = 'en_IN',
-    int decimalDigits = 2,
+    String? currencySymbol,
+    String? locale,
+    int? decimalDigits,
     bool showSign = false,
   }) {
-    final NumberFormat format = NumberFormat.currency(
-      locale: locale,
-      symbol: currencySymbol,
-      decimalDigits: decimalDigits,
+    return CurrencyManager.instance.format(
+      amount,
+      customSymbol: currencySymbol,
+      customScheme: locale != null
+          ? (locale == 'en_IN' ? NumberingScheme.indian : NumberingScheme.western)
+          : null,
+      customDecimalDigits: decimalDigits,
+      showSign: showSign,
     );
-
-    final String formatted = format.format(amount.abs());
-    if (showSign) {
-      if (amount > 0) {
-        return '+$formatted';
-      } else if (amount < 0) {
-        return '-$formatted';
-      }
-    } else if (amount < 0) {
-      return '-$formatted';
-    }
-
-    return formatted;
   }
 
-  /// Formats large numbers compactly (e.g. ₹1.2K, ₹4.5M, ₹1.8B).
+  /// Formats large numbers compactly (e.g. ₹1.2K, ₹4.5M, ₹1.8B, ₹1.5L).
   static String formatCompact(
     double amount, {
-    String currencySymbol = '₹',
-    String locale = 'en_IN',
+    String? currencySymbol,
+    String? locale,
   }) {
-    final NumberFormat compactFormat = NumberFormat.compactCurrency(
-      locale: locale,
-      symbol: currencySymbol,
-      decimalDigits: 1,
+    return CurrencyManager.instance.formatCompact(
+      amount,
+      customSymbol: currencySymbol,
+      customScheme: locale != null
+          ? (locale == 'en_IN' ? NumberingScheme.indian : NumberingScheme.western)
+          : null,
     );
-    return compactFormat.format(amount);
   }
 
   /// Parses a string representation of currency into a double amount safely.
   static double? parseAmount(String input) {
-    if (input.trim().isEmpty) {
-      return null;
-    }
-    // Remove symbols, letters, spaces except digits, period, comma, negative sign
-    final String clean = input.replaceAll(RegExp(r'[^0-9.-]'), '');
-    return double.tryParse(clean);
+    return CurrencyManager.parseAmount(input);
   }
 }
