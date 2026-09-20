@@ -9,6 +9,7 @@ import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/subscriptions_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/filtered_transactions_screen.dart';
+import 'package:finance_app/features/transactions/presentation/screens/split_bill_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -70,6 +71,16 @@ class FinanceApp extends StatelessWidget {
                 categoryName: args['categoryName'] as String?,
                 startDate: args['startDate'] as DateTime?,
                 endDate: args['endDate'] as DateTime?,
+              ),
+              settings: settings,
+            );
+          case AppConstants.splitBillRoute:
+            final Map<String, dynamic> args = (settings.arguments as Map<String, dynamic>?) ?? {};
+            return MaterialPageRoute<void>(
+              builder: (_) => SplitBillScreen(
+                initialBillAmount: (args['initialBillAmount'] as num?)?.toDouble() ?? 120.0,
+                initialParticipants: (args['initialParticipants'] as num?)?.toInt() ?? 4,
+                categoryName: (args['categoryName'] as String?) ?? 'Food & Dining',
               ),
               settings: settings,
             );

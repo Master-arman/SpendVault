@@ -24,4 +24,5 @@ class AppConstants {
   static const String subscriptionsRoute = '/subscriptions';
   static const String automationRoute = '/automation';
   static const String filteredTransactionsRoute = '/transactions/filtered';
+  static const String splitBillRoute = '/transactions/split';
 }
