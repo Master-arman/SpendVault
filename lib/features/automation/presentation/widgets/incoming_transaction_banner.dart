@@ -11,6 +11,7 @@ class IncomingTransactionBanner extends StatefulWidget {
     required this.amount,
     required this.merchant,
     required this.category,
+    this.isAnomaly = false,
     this.currencySymbol = '₹',
     this.autoConfirmDuration = const Duration(seconds: 10),
     this.onConfirm,
@@ -21,6 +22,7 @@ class IncomingTransactionBanner extends StatefulWidget {
   final double amount;
   final String merchant;
   final String category;
+  final bool isAnomaly;
   final String currencySymbol;
   final Duration autoConfirmDuration;
   final VoidCallback? onConfirm;
@@ -136,7 +138,12 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
         decoration: BoxDecoration(
           color: AppColors.surfaceCard,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.5), width: 1.5),
+          border: Border.all(
+            color: widget.isAnomaly
+                ? AppColors.expenseRed.withValues(alpha: 0.8)
+                : AppColors.primary.withValues(alpha: 0.5),
+            width: widget.isAnomaly ? 2.0 : 1.5,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.35),
@@ -144,7 +151,8 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
               offset: const Offset(0, 8),
             ),
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.15),
+              color: (widget.isAnomaly ? AppColors.expenseRed : AppColors.primary)
+                  .withValues(alpha: widget.isAnomaly ? 0.25 : 0.15),
               blurRadius: 14,
               offset: const Offset(0, 2),
             ),
@@ -162,7 +170,9 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
                 return LinearProgressIndicator(
                   value: 1.0 - _progressController.value,
                   backgroundColor: AppColors.borderStroke,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    widget.isAnomaly ? AppColors.expenseRed : AppColors.primary,
+                  ),
                   minHeight: 3.5,
                 );
               },
@@ -182,22 +192,31 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.15),
+                              color: (widget.isAnomaly ? AppColors.expenseRed : AppColors.primary)
+                                  .withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(
-                              Icons.auto_awesome_rounded,
+                            child: Icon(
+                              widget.isAnomaly
+                                  ? Icons.warning_rounded
+                                  : Icons.auto_awesome_rounded,
                               size: 16,
-                              color: AppColors.accentIndigo,
+                              color: widget.isAnomaly
+                                  ? AppColors.expenseRed
+                                  : AppColors.accentIndigo,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            'Instant Transaction Alert',
+                          Text(
+                            widget.isAnomaly
+                                ? 'Anomaly Alert'
+                                : 'Instant Transaction Alert',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                              color: widget.isAnomaly
+                                  ? AppColors.expenseRed
+                                  : AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -207,7 +226,11 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
                         decoration: BoxDecoration(
                           color: AppColors.surfaceCardHover,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.borderStroke),
+                          border: Border.all(
+                            color: widget.isAnomaly
+                                ? AppColors.expenseRed.withValues(alpha: 0.4)
+                                : AppColors.borderStroke,
+                          ),
                         ),
                         child: Text(
                           'Auto-saving in ${_secondsRemaining}s',
@@ -221,6 +244,42 @@ class _IncomingTransactionBannerState extends State<IncomingTransactionBanner>
                     ],
                   ),
                   const SizedBox(height: 10),
+
+                  // High-priority visual warning chip for unusual expense
+                  if (widget.isAnomaly) ...[
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.expenseRed.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.expenseRed.withValues(alpha: 0.6),
+                          width: 1,
+                        ),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            size: 16,
+                            color: AppColors.expenseRed,
+                          ),
+                          SizedBox(width: 6),
+                          Text(
+                            'Unusual Expense Detected',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.expenseRed,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
 
                   // Detected Transaction Details Text
                   Text(
