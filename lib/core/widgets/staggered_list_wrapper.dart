@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// Configuration helper for staggered entrance animations.
@@ -68,6 +69,7 @@ class _StaggeredItemState extends State<StaggeredItem>
   late final AnimationController _controller;
   late final Animation<double> _fadeAnim;
   late final Animation<Offset> _slideAnim;
+  Timer? _delayTimer;
   bool _disposed = false;
 
   @override
@@ -93,7 +95,7 @@ class _StaggeredItemState extends State<StaggeredItem>
     if (totalDelayMs == 0) {
       _controller.forward();
     } else {
-      Future<void>.delayed(Duration(milliseconds: totalDelayMs), () {
+      _delayTimer = Timer(Duration(milliseconds: totalDelayMs), () {
         if (mounted && !_disposed) {
           _controller.forward();
         }
@@ -104,6 +106,7 @@ class _StaggeredItemState extends State<StaggeredItem>
   @override
   void dispose() {
     _disposed = true;
+    _delayTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

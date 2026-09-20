@@ -56,16 +56,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
-          : ListView.separated(
+          : ListView.builder(
+              itemExtent: 82.0,
               padding: const EdgeInsets.all(20),
               itemCount: _transactions.length,
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 10),
               itemBuilder: (BuildContext context, int index) {
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  delay: const Duration(milliseconds: 40),
-                  duration: const Duration(milliseconds: 320),
-                  child: TransactionTile(transaction: _transactions[index]),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: AnimationConfiguration.staggeredList(
+                    position: index,
+                    delay: const Duration(milliseconds: 40),
+                    duration: const Duration(milliseconds: 320),
+                    child: TransactionTile(transaction: _transactions[index]),
+                  ),
                 );
               },
             ),

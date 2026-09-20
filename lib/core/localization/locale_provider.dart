@@ -20,7 +20,6 @@ class LocaleProvider extends ValueNotifier<Locale> {
   void setLocale(Locale newLocale) {
     if (value != newLocale) {
       value = newLocale;
-      notifyListeners();
     }
   }
 

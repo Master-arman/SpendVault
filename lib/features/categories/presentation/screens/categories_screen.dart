@@ -45,55 +45,58 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
-          : ListView.separated(
+          : ListView.builder(
+              itemExtent: 84.0,
               padding: const EdgeInsets.all(20),
               itemCount: _categories.length,
-              separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 12),
               itemBuilder: (BuildContext context, int index) {
                 final CategoryModel category = _categories[index];
-                return Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceCard,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppColors.borderStroke),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: category.color.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceCard,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.borderStroke),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: category.color.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(category.icon, color: category.color, size: 22),
                         ),
-                        child: Icon(category.icon, color: category.color, size: 22),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              category.name,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            if (category.budgetLimit != null)
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               Text(
-                                'Monthly Limit: ₹${category.budgetLimit!.toStringAsFixed(0)}',
+                                category.name,
                                 style: const TextStyle(
-                                  fontSize: 12,
-                                  color: AppColors.textMuted,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
-                          ],
+                              if (category.budgetLimit != null)
+                                Text(
+                                  'Monthly Limit: ₹${category.budgetLimit!.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-                    ],
+                        const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+                      ],
+                    ),
                   ),
                 );
               },
