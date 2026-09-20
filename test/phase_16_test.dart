@@ -1,4 +1,5 @@
 import 'package:finance_app/features/analytics/data/models/category_budget.dart';
+import 'package:finance_app/features/analytics/presentation/widgets/budget_alert_card.dart';
 import 'package:finance_app/features/analytics/presentation/widgets/budget_slider.dart';
 import 'package:finance_app/features/categories/data/models/category.dart';
 import 'package:flutter/material.dart';
@@ -68,5 +69,27 @@ void main() {
 
       expect(currentBudget, 3000.0);
     });
+
+    testWidgets('BudgetAlertCard triggers pulsating animation and glow when over budget',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: BudgetAlertCard(
+              categoryName: 'Entertainment',
+              spentAmount: 550.0,
+              budgetLimit: 500.0,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Entertainment'), findsOneWidget);
+      expect(find.text('110%'), findsOneWidget);
+      expect(find.textContaining('Exceeded budget limit'), findsOneWidget);
+      expect(find.byType(BudgetAlertCard), findsOneWidget);
+      expect(find.byType(AnimatedBuilder), findsWidgets);
+    });
   });
 }
+
