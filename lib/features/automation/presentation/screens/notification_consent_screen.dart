@@ -1,5 +1,6 @@
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/features/automation/data/notification_listener_repo.dart';
+import 'package:finance_app/features/automation/domain/payment_app_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -189,7 +190,55 @@ class _NotificationConsentScreenState extends State<NotificationConsentScreen>
                 description:
                     'Detects official banking debits, credits, and merchant receipts to log your expenses automatically.',
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
+
+              // Whitelisted Payment Apps Section
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Whitelisted Payment Apps (${PaymentAppFilter.paymentApps.length})',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: PaymentAppFilter.supportedAppNames.map((appName) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceCardHover,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.borderStroke),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.verified_user_rounded,
+                          size: 14,
+                          color: AppColors.successGreen,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          appName,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 28),
 
               // CTA Action Button
               SizedBox(

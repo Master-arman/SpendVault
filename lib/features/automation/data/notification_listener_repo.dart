@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:finance_app/features/automation/domain/models/parsed_transaction.dart';
+import 'package:finance_app/features/automation/domain/payment_app_filter.dart';
 import 'package:finance_app/features/automation/sms_parser/bank_sms_parser.dart';
 
 /// Repository interface and implementation for Android Notification Listener Service Bridge.
@@ -39,6 +40,7 @@ class NotificationListenerRepo {
   }
 
   /// Processes raw incoming notification payload and parses financial transactions.
+  /// If [packageName] is provided, only whitelisted payment apps are accepted.
   void onNotificationReceived({
     required String title,
     required String content,
@@ -46,6 +48,11 @@ class NotificationListenerRepo {
     DateTime? timestamp,
   }) {
     if (!_isListening) return;
+
+    // Filter by payment app whitelist if package identifier is provided
+    if (packageName != null && !PaymentAppFilter.isWhitelisted(packageName)) {
+      return;
+    }
 
     final String fullText = '$title $content';
     final ParsedTransaction? parsed = _parser.parse(
