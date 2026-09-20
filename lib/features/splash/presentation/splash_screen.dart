@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/radial_expansion_route.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
+import 'package:finance_app/features/onboarding/domain/onboarding_service.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,15 +44,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _navigationTimer = Timer(const Duration(milliseconds: 1800), _navigateToHome);
   }
 
-  void _navigateToHome() {
-    if (!mounted) {
-      return;
+  Future<void> _navigateToHome() async {
+    if (!mounted) return;
+
+    final bool seenOnboarding =
+        await OnboardingService.instance.hasSeenOnboarding();
+
+    if (!mounted) return;
+
+    if (!seenOnboarding) {
+      Navigator.of(context)
+          .pushReplacementNamed(AppConstants.onboardingRoute);
+    } else {
+      Navigator.of(context).pushReplacement(
+        RadialExpansionRoute<void>(
+          page: const DashboardShell(),
+        ),
+      );
     }
-    Navigator.of(context).pushReplacement(
-      RadialExpansionRoute<void>(
-        page: const DashboardShell(),
-      ),
-    );
   }
 
   @override

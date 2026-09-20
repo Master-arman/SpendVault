@@ -30,4 +30,5 @@ class AppConstants {
   static const String subscriptionDetailRoute = '/subscriptions/detail';
   static const String searchRoute = '/transactions/search';
   static const String lockRoute = '/lock';
+  static const String onboardingRoute = '/onboarding';
 }

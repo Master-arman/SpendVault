@@ -8,6 +8,7 @@ import 'package:finance_app/features/automation/presentation/screens/automation_
 import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
+import 'package:finance_app/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:finance_app/features/security/domain/biometric_auth_service.dart';
 import 'package:finance_app/features/security/presentation/app_lock_observer.dart';
 import 'package:finance_app/features/security/presentation/screens/lock_screen.dart';
@@ -153,6 +154,11 @@ class _FinanceAppState extends State<FinanceApp> {
           case AppConstants.lockRoute:
             return MaterialPageRoute<void>(
               builder: (_) => const LockScreen(),
+              settings: settings,
+            );
+          case AppConstants.onboardingRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const OnboardingScreen(),
               settings: settings,
             );
           default:
