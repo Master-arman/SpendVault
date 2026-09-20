@@ -5,6 +5,7 @@ class AppColors {
   const AppColors._();
 
   // Core Theme Palette Tokens (Requested)
+  static const Color primary = Color(0xFF6366F1);
   static const Color darkSlateBackground = Color(0xFF0A0F1D);
   static const Color surfaceCard = Color(0xFF151D30);
   static const Color borderStroke = Color(0xFF24304F);

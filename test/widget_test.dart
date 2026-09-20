@@ -1,6 +1,7 @@
 import 'package:finance_app/app.dart';
 import 'package:finance_app/core/constants/regex_patterns.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
+import 'package:finance_app/core/theme/interactive_card.dart';
 import 'package:finance_app/core/utils/currency_formatter.dart';
 import 'package:finance_app/core/utils/debouncer.dart';
 import 'package:finance_app/core/utils/security_hash.dart';
@@ -85,6 +86,31 @@ void main() {
       final RegExpMatch? amount = RegexPatterns.currencyAmount.firstMatch(sms);
       expect(amount, isNotNull);
       expect(amount!.group(1), '50,000.00');
+    });
+  });
+
+  group('InteractiveCard Tests', () {
+    testWidgets('InteractiveCard renders child and handles interactions', (WidgetTester tester) async {
+      bool tapped = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: InteractiveCard(
+              onTap: () => tapped = true,
+              child: const Text('Card Content'),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Card Content'), findsOneWidget);
+      final initialScaleWidget = tester.widget<AnimatedScale>(find.byType(AnimatedScale));
+      expect(initialScaleWidget.scale, 1.0);
+
+      // Simulate tap
+      await tester.tap(find.text('Card Content'));
+      await tester.pumpAndSettle();
+      expect(tapped, isTrue);
     });
   });
 
