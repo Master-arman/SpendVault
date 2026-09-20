@@ -3,6 +3,7 @@ import 'package:finance_app/features/accounts/presentation/screens/accounts_scre
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/subscriptions_screen.dart';
+import 'package:finance_app/features/transactions/presentation/screens/dashboard_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _DashboardShellState extends State<DashboardShell> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
+    DashboardScreen(),
     AccountsScreen(),
     TransactionsScreen(),
     AnalyticsScreen(),
@@ -39,6 +41,7 @@ class _DashboardShellState extends State<DashboardShell> {
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
           onTap: (int index) {
             setState(() {
               _currentIndex = index;
@@ -46,12 +49,16 @@ class _DashboardShellState extends State<DashboardShell> {
           },
           items: const [
             BottomNavigationBarItem(
+              icon: Icon(Icons.space_dashboard_rounded),
+              label: 'Executive',
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.account_balance_rounded),
               label: 'Accounts',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt_long_rounded),
-              label: 'Transactions',
+              label: 'Ledger',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.insights_rounded),
@@ -71,3 +78,4 @@ class _DashboardShellState extends State<DashboardShell> {
     );
   }
 }
+
