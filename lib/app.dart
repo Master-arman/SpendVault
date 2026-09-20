@@ -4,6 +4,7 @@ import 'package:finance_app/core/theme/radial_expansion_route.dart';
 import 'package:finance_app/core/theme/shared_axis_route.dart';
 import 'package:finance_app/features/accounts/presentation/screens/accounts_screen.dart';
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
+import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
@@ -82,6 +83,11 @@ class FinanceApp extends StatelessWidget {
                 initialParticipants: (args['initialParticipants'] as num?)?.toInt() ?? 4,
                 categoryName: (args['categoryName'] as String?) ?? 'Food & Dining',
               ),
+              settings: settings,
+            );
+          case AppConstants.notificationConsentRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const NotificationConsentScreen(),
               settings: settings,
             );
           default:
