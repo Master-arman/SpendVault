@@ -23,4 +23,5 @@ class AppConstants {
   static const String categoriesRoute = '/categories';
   static const String subscriptionsRoute = '/subscriptions';
   static const String automationRoute = '/automation';
+  static const String filteredTransactionsRoute = '/transactions/filtered';
 }

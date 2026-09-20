@@ -1,12 +1,14 @@
 import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_theme.dart';
 import 'package:finance_app/core/theme/radial_expansion_route.dart';
+import 'package:finance_app/core/theme/shared_axis_route.dart';
 import 'package:finance_app/features/accounts/presentation/screens/accounts_screen.dart';
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/subscriptions_screen.dart';
+import 'package:finance_app/features/transactions/presentation/screens/filtered_transactions_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -58,6 +60,17 @@ class FinanceApp extends StatelessWidget {
           case AppConstants.subscriptionsRoute:
             return MaterialPageRoute<void>(
               builder: (_) => const SubscriptionsScreen(),
+              settings: settings,
+            );
+          case AppConstants.filteredTransactionsRoute:
+            final Map<String, dynamic> args = (settings.arguments as Map<String, dynamic>?) ?? {};
+            return SharedAxisPageRoute<void>(
+              page: FilteredTransactionsScreen(
+                categoryId: args['categoryId'] as String?,
+                categoryName: args['categoryName'] as String?,
+                startDate: args['startDate'] as DateTime?,
+                endDate: args['endDate'] as DateTime?,
+              ),
               settings: settings,
             );
           default:
