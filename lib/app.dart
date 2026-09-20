@@ -8,6 +8,9 @@ import 'package:finance_app/features/automation/presentation/screens/automation_
 import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
+import 'package:finance_app/features/security/domain/biometric_auth_service.dart';
+import 'package:finance_app/features/security/presentation/app_lock_observer.dart';
+import 'package:finance_app/features/security/presentation/screens/lock_screen.dart';
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
 import 'package:finance_app/features/subscriptions/data/models/subscription.dart';
 import 'package:finance_app/features/subscriptions/domain/models/subscription_model.dart';
@@ -22,12 +25,32 @@ import 'package:finance_app/features/transactions/presentation/screens/transacti
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:flutter/material.dart';
 
-class FinanceApp extends StatelessWidget {
+class FinanceApp extends StatefulWidget {
   const FinanceApp({super.key});
 
   @override
+  State<FinanceApp> createState() => _FinanceAppState();
+}
+
+class _FinanceAppState extends State<FinanceApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Lock the app on cold start so the user must authenticate before seeing
+    // any financial data. This is done asynchronously after the first frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final bool available =
+          await BiometricAuthService.instance.isAvailable();
+      if (available) {
+        BiometricAuthService.instance.lock();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AppThemeType>(
+    return AppLockObserver(
+      child: ValueListenableBuilder<AppThemeType>(
       valueListenable: ThemeProvider.instance,
       builder: (BuildContext context, AppThemeType themeType, _) {
         return MaterialApp(
@@ -127,6 +150,11 @@ class FinanceApp extends StatelessWidget {
               builder: (_) => const SearchScreen(),
               settings: settings,
             );
+          case AppConstants.lockRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const LockScreen(),
+              settings: settings,
+            );
           default:
             return MaterialPageRoute<void>(
               builder: (_) => const DashboardShell(),
@@ -134,9 +162,8 @@ class FinanceApp extends StatelessWidget {
             );
         }
       },
+    ),
     );
-  },
-);
   }
 }
 
