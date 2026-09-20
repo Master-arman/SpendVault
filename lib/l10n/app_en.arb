@@ -1,0 +1,107 @@
+{
+  "@@locale": "en",
+  "appName": "SpendVault",
+  "@appName": {
+    "description": "The title of the application"
+  },
+  "totalBalance": "Total Balance",
+  "@totalBalance": {
+    "description": "Label for the net total balance"
+  },
+  "addTransaction": "Add Transaction",
+  "@addTransaction": {
+    "description": "Button and title for adding a transaction"
+  },
+  "expense": "Expense",
+  "@expense": {
+    "description": "Label for an expense transaction"
+  },
+  "income": "Income",
+  "@income": {
+    "description": "Label for an income transaction"
+  },
+  "recentActivity": "Recent Activity",
+  "@recentActivity": {
+    "description": "Header for recent transaction activity"
+  },
+  "viewAll": "View All",
+  "@viewAll": {
+    "description": "Button to view all records"
+  },
+  "fastActions": "Fast Actions",
+  "@fastActions": {
+    "description": "Header for fast action carousel"
+  },
+  "transfer": "Transfer",
+  "@transfer": {
+    "description": "Action label for inter-account transfer"
+  },
+  "splitBill": "Split Bill",
+  "@splitBill": {
+    "description": "Action label for splitting a bill"
+  },
+  "scanSms": "Scan SMS",
+  "@scanSms": {
+    "description": "Action label for scanning SMS"
+  },
+  "exportReport": "Export Report",
+  "@exportReport": {
+    "description": "Action label for exporting financial report"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Label for settings"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme switcher setting label"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  "hindi": "Hindi",
+  "@hindi": {
+    "description": "Hindi language name"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notification settings title"
+  },
+  "errorGeneric": "An unexpected error occurred",
+  "@errorGeneric": {
+    "description": "Generic error fallback message"
+  },
+  "errorNetwork": "Network connection error",
+  "@errorNetwork": {
+    "description": "Network connection error message"
+  },
+  "errorAuthFailed": "Authentication failed",
+  "@errorAuthFailed": {
+    "description": "Authentication failure message"
+  },
+  "errorRequiredField": "This field is required",
+  "@errorRequiredField": {
+    "description": "Form validation required field error"
+  },
+  "errorInvalidAmount": "Please enter a valid amount",
+  "@errorInvalidAmount": {
+    "description": "Form validation invalid amount error"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Save button label"
+  }
+}

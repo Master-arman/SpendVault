@@ -23,8 +23,11 @@ import 'package:finance_app/features/transactions/presentation/screens/filtered_
 import 'package:finance_app/features/transactions/presentation/screens/search_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/split_bill_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
+import 'package:finance_app/core/localization/locale_provider.dart';
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
+import 'package:finance_app/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class FinanceApp extends StatefulWidget {
   const FinanceApp({super.key});
@@ -51,15 +54,26 @@ class _FinanceAppState extends State<FinanceApp> {
   @override
   Widget build(BuildContext context) {
     return AppLockObserver(
-      child: ValueListenableBuilder<AppThemeType>(
-      valueListenable: ThemeProvider.instance,
-      builder: (BuildContext context, AppThemeType themeType, _) {
-        return MaterialApp(
-          title: AppConstants.appName,
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.getThemeData(themeType),
-          themeMode: ThemeMode.light, // Uses resolved theme dynamically
-          initialRoute: AppConstants.splashRoute,
+      child: ValueListenableBuilder<Locale>(
+        valueListenable: LocaleProvider.instance,
+        builder: (BuildContext context, Locale currentLocale, _) {
+          return ValueListenableBuilder<AppThemeType>(
+            valueListenable: ThemeProvider.instance,
+            builder: (BuildContext context, AppThemeType themeType, _) {
+              return MaterialApp(
+                title: AppConstants.appName,
+                debugShowCheckedModeBanner: false,
+                locale: currentLocale,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                theme: AppTheme.getThemeData(themeType),
+                themeMode: ThemeMode.light, // Uses resolved theme dynamically
+                initialRoute: AppConstants.splashRoute,
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
           case AppConstants.splashRoute:
@@ -168,7 +182,11 @@ class _FinanceAppState extends State<FinanceApp> {
             );
         }
       },
-    ),
+    );
+            },
+          );
+        },
+      ),
     );
   }
 }
