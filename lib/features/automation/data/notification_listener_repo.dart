@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:finance_app/features/automation/domain/category_classifier.dart';
 import 'package:finance_app/features/automation/domain/models/parsed_transaction.dart';
 import 'package:finance_app/features/automation/domain/notification_parser.dart';
 import 'package:finance_app/features/automation/domain/payment_app_filter.dart';
@@ -9,13 +10,16 @@ class NotificationListenerRepo {
   NotificationListenerRepo({
     BankSmsParser? parser,
     NotificationParser? notificationParser,
+    CategoryClassifier? classifier,
     bool initialPermissionGranted = false,
   })  : _parser = parser ?? const BankSmsParser(),
         _notificationParser = notificationParser ?? const NotificationParser(),
+        _classifier = classifier ?? const CategoryClassifier(),
         _mockPermissionGranted = initialPermissionGranted;
 
   final BankSmsParser _parser;
   final NotificationParser _notificationParser;
+  final CategoryClassifier _classifier;
   final StreamController<ParsedTransaction> _transactionStreamController =
       StreamController<ParsedTransaction>.broadcast();
 
@@ -75,6 +79,12 @@ class NotificationListenerRepo {
     );
 
     if (parsed != null) {
+      if (parsed.category == null || parsed.category == 'Miscellaneous') {
+        final String inferredCategory = _classifier.classify(
+          '${parsed.merchant ?? ''} $fullText',
+        );
+        parsed = parsed.copyWith(category: inferredCategory);
+      }
       _transactionStreamController.add(parsed);
     }
   }
