@@ -26,4 +26,5 @@ class AppConstants {
   static const String notificationConsentRoute = '/automation/consent';
   static const String filteredTransactionsRoute = '/transactions/filtered';
   static const String splitBillRoute = '/transactions/split';
+  static const String addSubscriptionRoute = '/subscriptions/add';
 }

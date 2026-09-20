@@ -1,3 +1,4 @@
+import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/utils/currency_formatter.dart';
 import 'package:finance_app/features/subscriptions/data/repositories/subscription_repository_impl.dart';
@@ -100,6 +101,17 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                 );
               },
             ),
+      floatingActionButton: FloatingActionButton.extended(
+        key: const Key('add_subscription_fab'),
+        onPressed: () async {
+          await Navigator.of(context).pushNamed(AppConstants.addSubscriptionRoute);
+          _loadSubscriptions();
+        },
+        backgroundColor: AppColors.accentIndigo,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Add Subscription', style: TextStyle(fontWeight: FontWeight.w700)),
+      ),
     );
   }
 }

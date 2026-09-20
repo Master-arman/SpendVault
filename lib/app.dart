@@ -9,6 +9,7 @@ import 'package:finance_app/features/automation/presentation/screens/notificatio
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/splash/presentation/splash_screen.dart';
+import 'package:finance_app/features/subscriptions/presentation/screens/add_subscription_screen.dart';
 import 'package:finance_app/features/subscriptions/presentation/screens/subscriptions_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/filtered_transactions_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/split_bill_screen.dart';
@@ -94,6 +95,11 @@ class FinanceApp extends StatelessWidget {
           case AppConstants.automationRoute:
             return MaterialPageRoute<void>(
               builder: (_) => const AutomationSettingsScreen(),
+              settings: settings,
+            );
+          case AppConstants.addSubscriptionRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const AddSubscriptionScreen(),
               settings: settings,
             );
           default:
