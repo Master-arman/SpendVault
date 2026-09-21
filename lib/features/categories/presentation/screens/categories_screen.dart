@@ -3,6 +3,7 @@ import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/categories/data/repositories/category_repository_impl.dart';
 import 'package:finance_app/features/categories/domain/models/category_model.dart';
 import 'package:finance_app/features/categories/domain/repositories/category_repository.dart';
+import 'package:finance_app/features/categories/presentation/screens/category_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -35,6 +36,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories & Budgets'),
@@ -46,7 +49,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
           : ListView.builder(
-              itemExtent: 84.0,
+              itemExtent: 92.0,
               padding: const EdgeInsets.all(20),
               itemCount: _categories.length,
               itemBuilder: (BuildContext context, int index) {
@@ -54,48 +57,76 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Container(
-                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceCard,
+                      color: theme.cardTheme.color ?? theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.borderStroke),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: category.color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(category.icon, color: category.color, size: 22),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (context) => CategoryDetailScreen(category: category),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          child: Row(
                             children: [
-                              Text(
-                                category.name,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: category.color.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(category.icon, color: category.color, size: 22),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      category.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
+                                    ),
+                                    if (category.budgetLimit != null) ...[
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Monthly Limit: ₹${category.budgetLimit!.toStringAsFixed(0)}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
-                              if (category.budgetLimit != null)
-                                Text(
-                                  'Monthly Limit: ₹${category.budgetLimit!.toStringAsFixed(0)}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textMuted,
-                                  ),
-                                ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                              ),
                             ],
                           ),
                         ),
-                        const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-                      ],
+                      ),
                     ),
                   ),
                 );
