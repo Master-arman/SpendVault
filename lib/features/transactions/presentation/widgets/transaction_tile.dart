@@ -51,13 +51,15 @@ class TransactionTile extends StatelessWidget {
                     size: 18,
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         transaction.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -67,11 +69,15 @@ class TransactionTile extends StatelessWidget {
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          Text(
-                            formatter.format(transaction.date),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          Flexible(
+                            child: Text(
+                              formatter.format(transaction.date),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
                             ),
                           ),
                           if (transaction.isAutomated) ...[
@@ -87,6 +93,7 @@ class TransactionTile extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(width: 12),
                 Text(
                   CurrencyFormatter.format(
                     transaction.amount,
