@@ -5,6 +5,7 @@ import 'package:finance_app/features/categories/domain/models/category_model.dar
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
+import 'package:finance_app/features/transactions/presentation/widgets/transaction_detail_modal.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -231,7 +232,13 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   ..._filteredTransactions.map(
                     (txn) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
-                      child: TransactionTile(transaction: txn),
+                      child: TransactionTile(
+                        transaction: txn,
+                        onTap: () => TransactionDetailModal.show(
+                          context: context,
+                          transaction: txn,
+                        ),
+                      ),
                     ),
                   ),
               ],

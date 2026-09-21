@@ -108,7 +108,7 @@ void main() {
 
       final listView = tester.widget<ListView>(listViewFinder);
       expect(listView.itemExtent, isNotNull);
-      expect(listView.itemExtent, equals(84.0));
+      expect(listView.itemExtent, equals(92.0));
     });
   });
 

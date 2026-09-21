@@ -4,6 +4,7 @@ import 'package:finance_app/core/widgets/staggered_list_wrapper.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
+import 'package:finance_app/features/transactions/presentation/widgets/transaction_detail_modal.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -152,7 +153,13 @@ class _FilteredTransactionsScreenState extends State<FilteredTransactionsScreen>
                               position: index,
                               delay: const Duration(milliseconds: 40),
                               duration: const Duration(milliseconds: 320),
-                              child: TransactionTile(transaction: _filteredTransactions[index]),
+                              child: TransactionTile(
+                                transaction: _filteredTransactions[index],
+                                onTap: () => TransactionDetailModal.show(
+                                  context: context,
+                                  transaction: _filteredTransactions[index],
+                                ),
+                              ),
                             ),
                           );
                         },
