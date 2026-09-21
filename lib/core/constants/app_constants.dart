@@ -33,4 +33,5 @@ class AppConstants {
   static const String transferRoute = '/accounts/transfer';
   static const String lockRoute = '/lock';
   static const String onboardingRoute = '/onboarding';
+  static const String budgetsRoute = '/budgets';
 }

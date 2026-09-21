@@ -9,6 +9,7 @@ import 'package:finance_app/features/analytics/presentation/screens/analytics_sc
 import 'package:finance_app/features/automation/presentation/screens/automation_settings_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/scan_message_screen.dart';
+import 'package:finance_app/features/budgets/presentation/screens/budgets_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -197,6 +198,11 @@ class _FinanceAppState extends State<FinanceApp> {
           case AppConstants.onboardingRoute:
             return MaterialPageRoute<void>(
               builder: (_) => const OnboardingScreen(),
+              settings: settings,
+            );
+          case AppConstants.budgetsRoute:
+            return MaterialPageRoute<void>(
+              builder: (_) => const BudgetsScreen(),
               settings: settings,
             );
           default:
