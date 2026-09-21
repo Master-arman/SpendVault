@@ -1,12 +1,16 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:finance_app/core/constants/app_constants.dart';
+import 'package:finance_app/features/reports/domain/csv_exporter.dart';
 import 'package:finance_app/features/transactions/data/models/transaction.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// Representation of a single transaction entry in the PDF ledger.
 class PdfStatementItem {
@@ -369,6 +373,73 @@ class PdfStatementGenerator {
       currencySymbol: currencySymbol,
     );
     return await doc.save();
+  }
+
+  static IShareBridge _shareBridge = const DefaultShareBridge();
+
+  /// Overrides the share bridge for unit testing.
+  static void setShareBridgeForTesting(IShareBridge? bridge) {
+    _shareBridge = bridge ?? const DefaultShareBridge();
+  }
+
+  /// Writes generated PDF bytes to a file in the temporary cache directory.
+  static Future<File> writePdfFile({
+    required List<dynamic> transactions,
+    String filename = 'statement.pdf',
+    String accountName = 'All Linked Accounts',
+    String? accountNumberMasked,
+    DateTime? generatedDate,
+    DateTimeRange? dateRange,
+    String currencySymbol = AppConstants.defaultCurrencySymbol,
+    Directory? directory,
+  }) async {
+    final Uint8List bytes = await generatePdfBytes(
+      transactions: transactions,
+      accountName: accountName,
+      accountNumberMasked: accountNumberMasked,
+      generatedDate: generatedDate,
+      dateRange: dateRange,
+      currencySymbol: currencySymbol,
+    );
+
+    final Directory dir = directory ?? await getTemporaryDirectory();
+    final File file = File('${dir.path}/$filename');
+    return await file.writeAsBytes(bytes);
+  }
+
+  /// Exports PDF file and invokes [Share.shareXFiles] so the user can send via email, WhatsApp, or save to files.
+  static Future<ShareResult> exportAndShare({
+    required List<dynamic> transactions,
+    String filename = 'statement.pdf',
+    String accountName = 'All Linked Accounts',
+    String? accountNumberMasked,
+    DateTime? generatedDate,
+    DateTimeRange? dateRange,
+    String currencySymbol = AppConstants.defaultCurrencySymbol,
+    String subject = 'FinanceX Financial Statement',
+    String? text = 'Attached is your generated financial statement report.',
+  }) async {
+    final File file = await writePdfFile(
+      transactions: transactions,
+      filename: filename,
+      accountName: accountName,
+      accountNumberMasked: accountNumberMasked,
+      generatedDate: generatedDate,
+      dateRange: dateRange,
+      currencySymbol: currencySymbol,
+    );
+
+    final XFile xFile = XFile(
+      file.path,
+      mimeType: 'application/pdf',
+      name: filename,
+    );
+
+    return await _shareBridge.shareXFiles(
+      [xFile],
+      subject: subject,
+      text: text,
+    );
   }
 
   /// Exports and invokes [Printing.sharePdf] with the generated statement.

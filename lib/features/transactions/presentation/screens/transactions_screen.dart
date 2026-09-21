@@ -2,6 +2,7 @@ import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/widgets/staggered_list_wrapper.dart';
+import 'package:finance_app/features/reports/presentation/widgets/export_report_bottom_sheet.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
@@ -65,6 +66,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       appBar: AppBar(
         title: const Text('All Transactions'),
         actions: [
+          IconButton(
+            key: const Key('button_export_transactions'),
+            icon: const Icon(Icons.file_download_outlined),
+            tooltip: 'Export Statement & Data',
+            onPressed: () {
+              ExportReportBottomSheet.show(
+                context: context,
+                transactions: _transactions,
+              );
+            },
+          ),
           IconButton(
             key: const Key('open_search_button'),
             icon: const Icon(Icons.search_rounded),

@@ -111,7 +111,9 @@ class CsvExporter {
         final String category = item.category;
         final String amount = item.amount.toStringAsFixed(2);
         final String tags = item.isAutomated ? '#auto' : '';
-        final String notes = item.note ?? item.title;
+        final String notes = item.merchant != null && item.merchant!.isNotEmpty && item.merchant != item.title
+            ? '${item.merchant} - ${item.note ?? item.title}'
+            : (item.note ?? item.title);
         final bool isAutoDetected = item.isAutomated;
 
         rows.add([
@@ -163,7 +165,7 @@ class CsvExporter {
     return await file.writeAsString(csvContent, encoding: utf8);
   }
 
-  /// Generates CSV file and triggers system share sheet via [SharePlus.instance.shareXFiles].
+  /// Generates CSV file and triggers system share sheet via [Share.shareXFiles].
   static Future<ShareResult> exportAndShare({
     required List<dynamic> transactions,
     String filename = 'transactions_export.csv',
@@ -171,16 +173,16 @@ class CsvExporter {
     String subject = 'FinanceX Transaction Ledger Export',
     String? text = 'Attached is your exported financial transaction ledger.',
   }) async {
-    final String csvContent = generateCsvString(
+    final File file = await writeCsvFile(
       transactions: transactions,
+      filename: filename,
       currency: currency,
     );
 
-    final XFile xFile = XFile.fromData(
-      Uint8List.fromList(utf8.encode(csvContent)),
+    final XFile xFile = XFile(
+      file.path,
       mimeType: 'text/csv',
       name: filename,
-      path: filename,
     );
 
     return await _shareBridge.shareXFiles(

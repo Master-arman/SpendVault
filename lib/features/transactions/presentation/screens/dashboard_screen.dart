@@ -10,6 +10,7 @@ import 'package:finance_app/features/transactions/domain/models/transaction_mode
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_tile.dart';
 import 'package:finance_app/features/reports/domain/pdf_statement_generator.dart';
+import 'package:finance_app/features/reports/presentation/widgets/export_report_bottom_sheet.dart';
 import 'package:finance_app/features/tour/domain/feature_tour_service.dart';
 import 'package:finance_app/features/tour/presentation/widgets/feature_spotlight_overlay.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -169,11 +170,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         color: AppColors.successGreen,
         onTap: () async {
           final txns = await _repository.getTransactions();
-          await PdfStatementGenerator.shareStatement(
-            transactions: txns,
-            accountName: 'Executive Portfolio',
-            filename: 'statement.pdf',
-          );
+          if (context.mounted) {
+            ExportReportBottomSheet.show(
+              context: context,
+              transactions: txns,
+            );
+          }
         },
       ),
     ];
