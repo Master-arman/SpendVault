@@ -7,6 +7,7 @@ import 'package:finance_app/features/accounts/presentation/screens/accounts_scre
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/automation_settings_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
+import 'package:finance_app/features/automation/presentation/screens/scan_message_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/dashboard/presentation/dashboard_shell.dart';
 import 'package:finance_app/features/onboarding/presentation/screens/onboarding_screen.dart';
@@ -165,6 +166,15 @@ class _FinanceAppState extends State<FinanceApp> {
           case AppConstants.searchRoute:
             return MaterialPageRoute<void>(
               builder: (_) => const SearchScreen(),
+              settings: settings,
+            );
+          case AppConstants.scanMessageRoute:
+            final Map<String, dynamic> args =
+                (settings.arguments as Map<String, dynamic>?) ?? {};
+            return MaterialPageRoute<void>(
+              builder: (_) => ScanMessageScreen(
+                initialMessage: args['initialMessage'] as String?,
+              ),
               settings: settings,
             );
           case AppConstants.lockRoute:

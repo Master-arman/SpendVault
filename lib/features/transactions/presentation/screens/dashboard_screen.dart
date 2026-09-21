@@ -155,10 +155,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         label: 'Scan SMS',
         icon: Icons.sms_outlined,
         color: AppColors.accentCyan,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Scanning Inbox for Bank SMS...')),
-          );
+        onTap: () async {
+          final result = await Navigator.of(context).pushNamed(AppConstants.scanMessageRoute);
+          if (result != null && mounted) {
+            _loadRecentTransactions();
+          }
         },
       ),
       FastActionItem(

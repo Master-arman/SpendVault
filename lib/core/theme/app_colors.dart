@@ -52,6 +52,7 @@ class AppColors {
 
   // Semantic Feedback Colors
   static const Color successGreen = Color(0xFF10B981);
+  static const Color incomeGreen = Color(0xFF10B981);
   static const Color successGreenSoft = Color(0x1F10B981);
   static const Color expenseRed = Color(0xFFF43F5E);
   static const Color expenseRedSoft = Color(0x1FF43F5E);

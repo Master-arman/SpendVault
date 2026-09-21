@@ -2,7 +2,7 @@ import 'package:finance_app/features/transactions/domain/models/transaction_mode
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
-  final List<TransactionModel> _transactions = [
+  static final List<TransactionModel> _transactions = [
     TransactionModel(
       id: 'txn-1',
       title: 'Salary Deposit',
