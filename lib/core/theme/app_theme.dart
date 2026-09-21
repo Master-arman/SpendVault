@@ -112,8 +112,80 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.lightPrimary, width: 1.5),
         ),
       ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.lightBackground,
+        selectedItemColor: AppColors.lightPrimary,
+        unselectedItemColor: AppColors.lightTextMuted,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        selectedLabelStyle: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.2,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -0.2,
+        ),
+      ),
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 32,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -1.0,
+        ),
+        displayMedium: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.8,
+        ),
+        headlineMedium: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.5,
+        ),
+        titleLarge: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.3,
+        ),
+        titleMedium: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        bodyLarge: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        ),
+        bodyMedium: TextStyle(
+          color: AppColors.lightTextSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
+        bodySmall: TextStyle(
+          color: AppColors.lightTextMuted,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+        ),
+        labelLarge: TextStyle(
+          color: AppColors.lightTextPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
+
+  /// Direct aliases for centralized ThemeData
+  static ThemeData get light => lightTheme;
+  static ThemeData get dark => darkTheme;
 
   /// Dark Theme utilizing matte dark slate #0F172A, card #1E293B, border #334155
   static ThemeData get darkTheme {
