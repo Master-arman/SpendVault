@@ -4,6 +4,8 @@ import 'package:finance_app/features/transactions/domain/models/transaction_mode
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:finance_app/features/transactions/presentation/widgets/split_bill_dialog.dart';
+
 /// Modal bottom sheet displaying detailed receipt metrics, account metadata,
 /// and edit/delete actions for a selected [TransactionModel].
 class TransactionDetailModal extends StatelessWidget {
@@ -227,6 +229,33 @@ class TransactionDetailModal extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
+
+              // Split Bill Action Button
+              OutlinedButton.icon(
+                key: const Key('button_split_transaction'),
+                icon: const Icon(Icons.call_split_rounded, size: 18, color: AppColors.warningAmber),
+                label: const Text(
+                  'Split This Expense',
+                  style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.warningAmber),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  side: BorderSide(color: AppColors.warningAmber.withValues(alpha: 0.5)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  SplitBillDialog.show(
+                    context: context,
+                    initialTotalAmount: transaction.amount,
+                    initialTitle: transaction.title,
+                    initialCategory: transaction.category,
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
               // Action Buttons: Edit & Delete
               Row(

@@ -2,8 +2,10 @@ import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/core/utils/currency_formatter.dart';
 import 'package:finance_app/features/transactions/domain/bill_split_calculator.dart';
+import 'package:finance_app/features/transactions/presentation/widgets/split_bill_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// Screen for splitting group bills, computing debt shares, and tracking reimbursements.
 class SplitBillScreen extends StatefulWidget {
@@ -448,6 +450,71 @@ class _SplitBillScreenState extends State<SplitBillScreen> {
                 );
               },
             ),
+            const SizedBox(height: 24),
+
+            // Share Breakdown & Save Actions
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    key: const Key('screen_share_breakdown_button'),
+                    onPressed: () async {
+                      final buffer = StringBuffer();
+                      buffer.writeln('🧾 Bill Split: ${widget.categoryName}');
+                      buffer.writeln('💰 Total Bill: ${CurrencyFormatter.format(_totalBill)}');
+                      buffer.writeln('👥 Total People: $_participantsCount');
+                      buffer.writeln('------------------------------');
+                      for (final p in _participants) {
+                        buffer.writeln('• ${p.name}: ${CurrencyFormatter.format(p.shareAmount)}${p.isSettled ? " [Paid]" : " [Pending]"}');
+                      }
+                      buffer.writeln('------------------------------');
+                      buffer.writeln('You owe ${CurrencyFormatter.format(split.userShare)} for ${widget.categoryName}.');
+
+                      final shareText = buffer.toString();
+                      await Share.share(
+                        shareText,
+                        subject: 'Bill Split Breakdown',
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.accentCyan),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    icon: const Icon(Icons.share_rounded, size: 18, color: AppColors.accentCyan),
+                    label: const Text(
+                      'Share Breakdown',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.accentCyan),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    key: const Key('screen_custom_split_dialog_button'),
+                    onPressed: () {
+                      SplitBillDialog.show(
+                        context: context,
+                        initialTotalAmount: _totalBill,
+                        initialTitle: widget.categoryName,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentIndigo,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    icon: const Icon(Icons.tune_rounded, size: 18),
+                    label: const Text(
+                      'Custom Split',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/features/accounts/data/repositories/account_repository_impl.dart';
-import 'package:finance_app/features/accounts/domain/models/account_model.dart';
 import 'package:finance_app/features/accounts/presentation/screens/transfer_screen.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';

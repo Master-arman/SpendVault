@@ -1,8 +1,6 @@
 import 'package:finance_app/core/constants/app_constants.dart';
-import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:finance_app/features/automation/presentation/screens/scan_message_screen.dart';
 import 'package:finance_app/features/automation/presentation/widgets/confirm_transaction_dialog.dart';
-import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/presentation/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
