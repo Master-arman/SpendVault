@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'crash_data_sanitizer.dart';
 
@@ -110,7 +109,7 @@ class SentryCrashSink implements CrashReportSink {
         'stacktrace': sanitizedStackTrace,
       },
       'tags': {
-        if (reason != null) 'reason': reason,
+        'reason': ?reason,
       },
       'extra': customKeys,
     });

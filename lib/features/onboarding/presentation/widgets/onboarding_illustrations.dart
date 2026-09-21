@@ -55,7 +55,7 @@ class _StoragePainter extends CustomPainter {
     final Paint halo = Paint()
       ..shader = RadialGradient(
         colors: <Color>[
-          const Color(0xFF0D9488).withOpacity(0.18),
+          const Color(0xFF0D9488).withValues(alpha: 0.18),
           Colors.transparent,
         ],
       ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: 110));
@@ -220,7 +220,7 @@ class _LedgerPainter extends CustomPainter {
     final Paint halo = Paint()
       ..shader = RadialGradient(
         colors: <Color>[
-          const Color(0xFF0891B2).withOpacity(0.15),
+          const Color(0xFF0891B2).withValues(alpha: 0.15),
           Colors.transparent,
         ],
       ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: 110));
@@ -261,7 +261,7 @@ class _LedgerPainter extends CustomPainter {
       card,
       Paint()
         ..shader = LinearGradient(
-          colors: <Color>[color, color.withOpacity(0.7)],
+          colors: <Color>[color, color.withValues(alpha: 0.7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ).createShader(card.outerRect),
@@ -273,7 +273,7 @@ class _LedgerPainter extends CustomPainter {
         Rect.fromLTWH(cx - 70, cy - 12, 28, 20),
         const Radius.circular(4),
       ),
-      Paint()..color = Colors.white.withOpacity(0.3),
+      Paint()..color = Colors.white.withValues(alpha: 0.3),
     );
 
     // Label text via TextPainter
@@ -292,7 +292,7 @@ class _LedgerPainter extends CustomPainter {
     tp.paint(canvas, Offset(cx - 70, cy + 18));
 
     // Amount placeholder dots
-    final Paint dot = Paint()..color = Colors.white.withOpacity(0.5);
+    final Paint dot = Paint()..color = Colors.white.withValues(alpha: 0.5);
     for (int d = 0; d < 4; d++) {
       canvas.drawCircle(Offset(cx + 10 + d * 12.0, cy + 8), 3, dot);
     }
@@ -344,7 +344,7 @@ class _AutoDetectPainter extends CustomPainter {
     final Paint halo = Paint()
       ..shader = RadialGradient(
         colors: <Color>[
-          const Color(0xFF7C3AED).withOpacity(0.15),
+          const Color(0xFF7C3AED).withValues(alpha: 0.15),
           Colors.transparent,
         ],
       ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: 110));
@@ -358,7 +358,7 @@ class _AutoDetectPainter extends CustomPainter {
         math.pi * 1.4,
         false,
         Paint()
-          ..color = const Color(0xFF14B8A6).withOpacity(0.5 - i * 0.12)
+          ..color = const Color(0xFF14B8A6).withValues(alpha: 0.5 - i * 0.12)
           ..strokeWidth = 1.5
           ..style = PaintingStyle.stroke,
       );
@@ -439,7 +439,7 @@ class _AutoDetectPainter extends CustomPainter {
       canvas.drawRRect(
         bar,
         Paint()
-          ..color = const Color(0xFF14B8A6).withOpacity(0.6 - i * 0.15),
+          ..color = const Color(0xFF14B8A6).withValues(alpha: 0.6 - i * 0.15),
       );
     }
 

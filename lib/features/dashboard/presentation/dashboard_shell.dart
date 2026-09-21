@@ -1,4 +1,3 @@
-import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/features/accounts/presentation/screens/accounts_screen.dart';
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';

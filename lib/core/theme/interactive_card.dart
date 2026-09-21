@@ -104,8 +104,13 @@ class _InteractiveCardState extends State<InteractiveCard> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final defaultBg = theme.cardTheme.color ?? (isDark ? AppColors.surfaceCard : AppColors.lightCard);
+    final defaultBorder = theme.colorScheme.outline;
+
     final effectiveRadius = widget.borderRadius ?? BorderRadius.circular(16);
-    final effectiveBackground = widget.backgroundColor ?? AppColors.surfaceCard;
+    final effectiveBackground = widget.backgroundColor ?? defaultBg;
 
     final effectiveBorder = _isHovered && widget.enableHover
         ? widget.hoverBorder ??
@@ -115,7 +120,7 @@ class _InteractiveCardState extends State<InteractiveCard> {
             )
         : widget.border ??
             Border.all(
-              color: AppColors.borderStroke,
+              color: defaultBorder,
               width: 1.0,
             );
 
@@ -123,12 +128,23 @@ class _InteractiveCardState extends State<InteractiveCard> {
         ? widget.hoverBoxShadow ??
             [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.25),
+                color: isDark
+                    ? AppColors.primary.withValues(alpha: 0.25)
+                    : Colors.black.withValues(alpha: 0.08),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
             ]
-        : widget.boxShadow ?? const <BoxShadow>[];
+        : widget.boxShadow ??
+            (isDark
+                ? const <BoxShadow>[]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]);
 
     return MouseRegion(
       cursor: widget.onTap != null || widget.onLongPress != null

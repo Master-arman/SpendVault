@@ -158,7 +158,7 @@ class PdfStatementGenerator {
                         pw.SizedBox(width: 8),
                         pw.Text(
                           'FINANCEX STATEMENT',
-                          style: pw.TextStyle(
+                          style: const pw.TextStyle(
                             fontSize: 18,
                             fontWeight: pw.FontWeight.bold,
                             color: darkSlate,
@@ -190,7 +190,7 @@ class PdfStatementGenerator {
                     pw.SizedBox(height: 2),
                     pw.Text(
                       'Currency: $curr (INR)',
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                         fontSize: 9,
                         fontWeight: pw.FontWeight.bold,
                         color: darkSlate,
@@ -284,7 +284,7 @@ class PdfStatementGenerator {
             margin: const pw.EdgeInsets.only(bottom: 8),
             child: pw.Text(
               'TRANSACTION LEDGER (${items.length} Entries)',
-              style: pw.TextStyle(
+              style: const pw.TextStyle(
                 fontSize: 11,
                 fontWeight: pw.FontWeight.bold,
                 color: darkSlate,
@@ -439,10 +439,10 @@ class PdfStatementGenerator {
       child: pw.Text(
         text,
         textAlign: align,
-        style: pw.TextStyle(
+        style: const pw.TextStyle(
           fontSize: 9,
           fontWeight: pw.FontWeight.bold,
-          color: const PdfColor.fromInt(0xFFFFFFFF),
+          color: PdfColor.fromInt(0xFFFFFFFF),
         ),
       ),
     );

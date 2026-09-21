@@ -119,7 +119,7 @@ void main() {
       await tester.pumpWidget(const FinanceApp());
       expect(find.text('FINANCEX'), findsOneWidget);
       expect(find.text('Autonomous Wealth Management'), findsOneWidget);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(seconds: 1));
     });
   });
 }

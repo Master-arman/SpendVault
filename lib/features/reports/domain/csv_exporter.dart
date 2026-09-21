@@ -163,7 +163,7 @@ class CsvExporter {
     return await file.writeAsString(csvContent, encoding: utf8);
   }
 
-  /// Generates CSV file and triggers system share sheet via [Share.shareXFiles].
+  /// Generates CSV file and triggers system share sheet via [SharePlus.instance.shareXFiles].
   static Future<ShareResult> exportAndShare({
     required List<dynamic> transactions,
     String filename = 'transactions_export.csv',

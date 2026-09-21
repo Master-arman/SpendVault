@@ -838,12 +838,12 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
             const Divider(color: AppColors.borderStroke),
             const SizedBox(height: 12),
             // Phase 37: Auto-Log on Renewal Date Toggle
-            Row(
+            const Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Auto-Log on Renewal Date',
                         style: TextStyle(
@@ -863,17 +863,20 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
-                Switch.adaptive(
-                  key: const Key('switch_auto_log_renewal'),
-                  value: _autoLogOnRenewal,
-                  activeColor: AppColors.accentIndigo,
-                  onChanged: (bool val) {
-                    HapticFeedback.selectionClick();
-                    setState(() => _autoLogOnRenewal = val);
-                  },
-                ),
+                SizedBox(width: 12),
               ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Switch.adaptive(
+                key: const Key('switch_auto_log_renewal'),
+                value: _autoLogOnRenewal,
+                activeTrackColor: AppColors.accentIndigo,
+                onChanged: (bool val) {
+                  HapticFeedback.selectionClick();
+                  setState(() => _autoLogOnRenewal = val);
+                },
+              ),
             ),
           ],
         ),

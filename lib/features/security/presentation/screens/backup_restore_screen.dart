@@ -296,7 +296,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     required String content,
     required bool isError,
   }) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surfaceCard,

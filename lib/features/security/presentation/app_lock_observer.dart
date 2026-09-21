@@ -94,9 +94,9 @@ class _AppLockObserverState extends State<AppLockObserver>
         // When locked, render LockScreen on top of (but replacing) the tree so
         // no app content is visible in the task switcher thumbnail.
         if (locked) {
-          return MaterialApp(
+          return const MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: const LockScreen(),
+            home: LockScreen(),
           );
         }
         return child!;

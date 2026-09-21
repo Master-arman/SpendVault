@@ -110,7 +110,7 @@ class _FeatureSpotlightOverlayState extends State<FeatureSpotlightOverlay>
         offset.dy + size.height + pad.bottom,
       );
     } catch (_) {
-      final Size screenSize = MediaQuery.of(this.context).size;
+      final Size screenSize = MediaQuery.of(context).size;
       return Rect.fromCenter(
         center: Offset(screenSize.width / 2, screenSize.height / 2),
         width: 100,

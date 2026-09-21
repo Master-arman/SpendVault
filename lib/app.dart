@@ -1,5 +1,6 @@
 import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_theme.dart';
+import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:finance_app/core/theme/radial_expansion_route.dart';
 import 'package:finance_app/core/theme/shared_axis_route.dart';
 import 'package:finance_app/features/accounts/presentation/screens/accounts_screen.dart';
@@ -24,7 +25,6 @@ import 'package:finance_app/features/transactions/presentation/screens/search_sc
 import 'package:finance_app/features/transactions/presentation/screens/split_bill_screen.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:finance_app/core/localization/locale_provider.dart';
-import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/l10n/generated/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

@@ -122,7 +122,6 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final Color categoryColor = _isActive
         ? RenewalCalendar.getCategoryColor(_categoryName)
         : AppColors.textMuted;
@@ -219,7 +218,7 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
             Switch.adaptive(
               key: const Key('freeze_switch'),
               value: _isActive,
-              activeColor: AppColors.accentIndigo,
+              activeTrackColor: AppColors.accentIndigo,
               onChanged: _toggleFreeze,
             ),
           ],

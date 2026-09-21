@@ -1,4 +1,3 @@
-import 'package:finance_app/core/theme/app_theme.dart';
 import 'package:finance_app/features/security/domain/biometric_auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -253,7 +252,7 @@ class _AppLogo extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: colorScheme.primary.withOpacity(0.35),
+                color: colorScheme.primary.withValues(alpha: 0.35),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),

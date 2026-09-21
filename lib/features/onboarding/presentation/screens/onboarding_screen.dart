@@ -133,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           Positioned(
             bottom: -60,
             right: -60,
-            child: _GlowOrb(color: slide.accentColor.withOpacity(0.5), size: 200),
+            child: _GlowOrb(color: slide.accentColor.withValues(alpha: 0.5), size: 200),
           ),
 
           // ── Main content ───────────────────────────────────────────────────
@@ -149,7 +149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ? TextButton(
                             key: const Key('skip_button'),
                             onPressed: _skip,
-                            child: Text(
+                            child: const Text(
                               'Skip',
                               style: TextStyle(
                                 color: AppColors.textSecondary,
@@ -311,7 +311,7 @@ class _GlowOrb extends StatelessWidget {
         shape: BoxShape.circle,
         gradient: RadialGradient(
           colors: <Color>[
-            color.withOpacity(0.25),
+            color.withValues(alpha: 0.25),
             Colors.transparent,
           ],
         ),

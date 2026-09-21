@@ -624,7 +624,7 @@ class BackupService {
     Isar? isar,
     String? expectedFileChecksum,
   }) async {
-    if (!await backupFile.exists()) {
+    if (!backupFile.existsSync()) {
       throw RestoreValidationException('Backup file not found at: ${backupFile.path}');
     }
 
@@ -661,7 +661,7 @@ class BackupService {
   }
 
   /// Complete pipeline: Encrypts database, saves `.enc` to cache directory,
-  /// and triggers system share sheet via [Share.shareXFiles].
+  /// and triggers system share sheet via [SharePlus.instance.shareXFiles].
   static Future<ShareResult> backupAndShare({
     required String jsonPayload,
     required String password,

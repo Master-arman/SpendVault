@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import file_picker_darwin
+import file_picker
 import google_sign_in_ios
 import isar_flutter_libs
 import local_auth_darwin

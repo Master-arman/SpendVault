@@ -161,7 +161,7 @@ class BankSmsParser {
   }
 
   static String _resolveMerchant(String fullText, String capturedRaw, String fallback) {
-    String merchant = _cleanMerchant(capturedRaw);
+    final String merchant = _cleanMerchant(capturedRaw);
     if (merchant.isNotEmpty && !_isDateString(merchant)) {
       return merchant;
     }
