@@ -6,4 +6,11 @@ abstract class AccountRepository {
   Future<void> addAccount(AccountModel account);
   Future<void> updateAccount(AccountModel account);
   Future<void> deleteAccount(String id);
+  Future<void> transferFunds({
+    required String fromAccountId,
+    required String toAccountId,
+    required double amount,
+    DateTime? date,
+    String? note,
+  });
 }

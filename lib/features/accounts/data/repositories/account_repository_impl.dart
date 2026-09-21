@@ -1,8 +1,11 @@
 import 'package:finance_app/features/accounts/domain/models/account_model.dart';
 import 'package:finance_app/features/accounts/domain/repositories/account_repository.dart';
+import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
+import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
+import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
-  final List<AccountModel> _accounts = [
+  static final List<AccountModel> _accounts = [
     const AccountModel(
       id: 'acc-1',
       name: 'Primary Checking',
@@ -29,6 +32,8 @@ class AccountRepositoryImpl implements AccountRepository {
       type: AccountType.bank,
     ),
   ];
+
+  final TransactionRepository _transactionRepository = TransactionRepositoryImpl();
 
   @override
   Future<List<AccountModel>> getAccounts() async {
@@ -60,5 +65,50 @@ class AccountRepositoryImpl implements AccountRepository {
   @override
   Future<void> deleteAccount(String id) async {
     _accounts.removeWhere((AccountModel a) => a.id == id);
+  }
+
+  @override
+  Future<void> transferFunds({
+    required String fromAccountId,
+    required String toAccountId,
+    required double amount,
+    DateTime? date,
+    String? note,
+  }) async {
+    final int fromIndex = _accounts.indexWhere((AccountModel a) => a.id == fromAccountId);
+    final int toIndex = _accounts.indexWhere((AccountModel a) => a.id == toAccountId);
+
+    if (fromIndex == -1 || toIndex == -1) {
+      throw ArgumentError('Invalid account IDs provided for fund transfer');
+    }
+
+    final AccountModel fromAccount = _accounts[fromIndex];
+    final AccountModel toAccount = _accounts[toIndex];
+
+    // Double-entry record: decrement source balance, increment destination balance
+    _accounts[fromIndex] = fromAccount.copyWith(
+      balance: fromAccount.balance - amount,
+    );
+    _accounts[toIndex] = toAccount.copyWith(
+      balance: toAccount.balance + amount,
+    );
+
+    // Log the transfer entry into the ledger
+    final DateTime transferDate = date ?? DateTime.now();
+    final TransactionModel transferTxn = TransactionModel(
+      id: 'txn-transfer-${DateTime.now().millisecondsSinceEpoch}',
+      title: 'Transfer: ${fromAccount.name} → ${toAccount.name}',
+      amount: amount,
+      flow: TransactionFlow.transfer,
+      category: 'Transfer',
+      date: transferDate,
+      accountId: fromAccount.id,
+      accountName: fromAccount.name,
+      merchant: toAccount.name,
+      note: note ?? 'Inter-account transfer from ${fromAccount.name} to ${toAccount.name}',
+      isAutomated: false,
+    );
+
+    await _transactionRepository.addTransaction(transferTxn);
   }
 }

@@ -137,10 +137,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         label: 'Transfer',
         icon: Icons.swap_horiz_rounded,
         color: AppColors.accentIndigo,
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Inter-Account Transfer Triggered')),
-          );
+        onTap: () async {
+          final result = await Navigator.of(context).pushNamed(AppConstants.transferRoute);
+          if (result == true && mounted) {
+            _loadRecentTransactions();
+          }
         },
       ),
       FastActionItem(

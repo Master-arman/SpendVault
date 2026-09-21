@@ -1,3 +1,4 @@
+import 'package:finance_app/core/constants/app_constants.dart';
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/accounts/data/models/account.dart' as isar_model;
@@ -66,12 +67,18 @@ class _AccountsScreenState extends State<AccountsScreen> {
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
         ),
         actions: [
-          const ThemeToggleButton(),
           IconButton(
-            icon: const Icon(Icons.add_rounded, color: AppColors.indigoLight),
-            tooltip: 'Add Account',
-            onPressed: () {},
+            icon: const Icon(Icons.swap_horiz_rounded, color: AppColors.accentIndigo),
+            tooltip: 'Transfer Funds',
+            onPressed: () async {
+              final result = await Navigator.pushNamed(context, AppConstants.transferRoute);
+              if (result == true) {
+                _loadAccounts();
+              }
+            },
           ),
+          const ThemeToggleButton(),
+          const SizedBox(width: 4),
         ],
       ),
       body: _isLoading

@@ -4,6 +4,7 @@ import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:finance_app/core/theme/radial_expansion_route.dart';
 import 'package:finance_app/core/theme/shared_axis_route.dart';
 import 'package:finance_app/features/accounts/presentation/screens/accounts_screen.dart';
+import 'package:finance_app/features/accounts/presentation/screens/transfer_screen.dart';
 import 'package:finance_app/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/automation_settings_screen.dart';
 import 'package:finance_app/features/automation/presentation/screens/notification_consent_screen.dart';
@@ -174,6 +175,17 @@ class _FinanceAppState extends State<FinanceApp> {
             return MaterialPageRoute<void>(
               builder: (_) => ScanMessageScreen(
                 initialMessage: args['initialMessage'] as String?,
+              ),
+              settings: settings,
+            );
+          case AppConstants.transferRoute:
+            final Map<String, dynamic> args =
+                (settings.arguments as Map<String, dynamic>?) ?? {};
+            return MaterialPageRoute<void>(
+              builder: (_) => TransferScreen(
+                initialFromAccountId: args['initialFromAccountId'] as String?,
+                initialToAccountId: args['initialToAccountId'] as String?,
+                initialAmount: (args['initialAmount'] as num?)?.toDouble(),
               ),
               settings: settings,
             );
