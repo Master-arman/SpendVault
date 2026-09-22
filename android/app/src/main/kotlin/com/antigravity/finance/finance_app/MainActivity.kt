@@ -3,7 +3,6 @@ package com.antigravity.finance.finance_app
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -18,7 +17,6 @@ class MainActivity : FlutterFragmentActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SMS_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
