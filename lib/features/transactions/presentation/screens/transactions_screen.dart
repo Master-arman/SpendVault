@@ -69,6 +69,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         title: const Text('All Transactions'),
         actions: [
           IconButton(
+            key: const Key('button_sync_sms_transactions'),
+            icon: const Icon(Icons.sms_rounded),
+            tooltip: 'Read Messages & Sync SMS',
+            onPressed: () async {
+              final result = await Navigator.of(context).pushNamed(AppConstants.scanMessageRoute);
+              if (result != null && mounted) {
+                _loadData();
+              }
+            },
+          ),
+          IconButton(
             key: const Key('button_export_transactions'),
             icon: const Icon(Icons.file_download_outlined),
             tooltip: 'Export Statement & Data',

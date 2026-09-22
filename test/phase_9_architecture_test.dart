@@ -1,4 +1,5 @@
 import 'package:finance_app/core/theme/app_theme.dart';
+import 'package:finance_app/features/budgets/data/repositories/budget_repository.dart';
 import 'package:finance_app/features/budgets/domain/models/budget_model.dart';
 import 'package:finance_app/features/budgets/presentation/screens/budgets_screen.dart';
 import 'package:finance_app/features/budgets/presentation/widgets/budget_card.dart';
@@ -124,10 +125,20 @@ void main() {
     });
 
     testWidgets('BudgetsScreen renders list of category envelopes', (WidgetTester tester) async {
+      final repo = InMemoryBudgetRepository();
+      await repo.saveBudget(
+        const BudgetModel(
+          id: 'b-dining',
+          category: 'Food & Dining',
+          limitAmount: 500.0,
+          spentAmount: 350.0,
+        ),
+      );
+
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,
-          home: const BudgetsScreen(),
+          home: BudgetsScreen(repository: repo),
         ),
       );
       await tester.pumpAndSettle();

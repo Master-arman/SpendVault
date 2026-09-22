@@ -7,32 +7,7 @@ abstract class BudgetRepository {
 }
 
 class InMemoryBudgetRepository implements BudgetRepository {
-  final List<BudgetModel> _budgets = [
-    const BudgetModel(
-      id: 'b-1',
-      category: 'Food & Dining',
-      limitAmount: 800.0,
-      spentAmount: 540.0,
-    ),
-    const BudgetModel(
-      id: 'b-2',
-      category: 'Groceries',
-      limitAmount: 600.0,
-      spentAmount: 320.0,
-    ),
-    const BudgetModel(
-      id: 'b-3',
-      category: 'Transportation',
-      limitAmount: 300.0,
-      spentAmount: 285.0,
-    ),
-    const BudgetModel(
-      id: 'b-4',
-      category: 'Entertainment',
-      limitAmount: 250.0,
-      spentAmount: 110.0,
-    ),
-  ];
+  final List<BudgetModel> _budgets = [];
 
   @override
   Future<List<BudgetModel>> getBudgets() async {

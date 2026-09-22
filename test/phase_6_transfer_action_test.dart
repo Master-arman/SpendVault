@@ -7,8 +7,44 @@ import 'package:finance_app/features/transactions/presentation/screens/dashboard
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:finance_app/features/accounts/domain/models/account_model.dart';
+
 void main() {
   group('Phase 6: Transfer Action Flow & Double-Entry Ledger Tests', () {
+    setUp(() async {
+      final repository = AccountRepositoryImpl();
+      await repository.addAccount(
+        const AccountModel(
+          id: 'acc-1',
+          name: 'Primary Checking',
+          institutionName: 'HDFC Bank',
+          accountNumberMasked: '****4592',
+          balance: 45250.75,
+          type: AccountType.bank,
+          isDefault: true,
+        ),
+      );
+      await repository.addAccount(
+        const AccountModel(
+          id: 'acc-2',
+          name: 'Platinum Rewards Card',
+          institutionName: 'ICICI Bank',
+          accountNumberMasked: '****8901',
+          balance: 5000.00,
+          type: AccountType.creditCard,
+        ),
+      );
+      await repository.addAccount(
+        const AccountModel(
+          id: 'acc-3',
+          name: 'High Yield Savings',
+          institutionName: 'SBI Savings',
+          accountNumberMasked: '****7124',
+          balance: 185900.00,
+          type: AccountType.bank,
+        ),
+      );
+    });
     test('AccountRepositoryImpl.transferFunds executes atomic double-entry balance mutation', () async {
       final repository = AccountRepositoryImpl();
       final txnRepo = TransactionRepositoryImpl();

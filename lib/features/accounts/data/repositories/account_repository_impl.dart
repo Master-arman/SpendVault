@@ -5,33 +5,7 @@ import 'package:finance_app/features/transactions/domain/models/transaction_mode
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
-  static final List<AccountModel> _accounts = [
-    const AccountModel(
-      id: 'acc-1',
-      name: 'Primary Checking',
-      institutionName: 'HDFC Bank',
-      accountNumberMasked: '****4592',
-      balance: 45250.75,
-      type: AccountType.bank,
-      isDefault: true,
-    ),
-    const AccountModel(
-      id: 'acc-2',
-      name: 'Platinum Rewards Card',
-      institutionName: 'ICICI Bank',
-      accountNumberMasked: '****8901',
-      balance: -3320.40,
-      type: AccountType.creditCard,
-    ),
-    const AccountModel(
-      id: 'acc-3',
-      name: 'High Yield Savings',
-      institutionName: 'SBI Savings',
-      accountNumberMasked: '****7124',
-      balance: 185900.00,
-      type: AccountType.bank,
-    ),
-  ];
+  static final List<AccountModel> _accounts = [];
 
   final TransactionRepository _transactionRepository = TransactionRepositoryImpl();
 
@@ -51,7 +25,12 @@ class AccountRepositoryImpl implements AccountRepository {
 
   @override
   Future<void> addAccount(AccountModel account) async {
-    _accounts.add(account);
+    final int index = _accounts.indexWhere((AccountModel a) => a.id == account.id);
+    if (index != -1) {
+      _accounts[index] = account;
+    } else {
+      _accounts.add(account);
+    }
   }
 
   @override

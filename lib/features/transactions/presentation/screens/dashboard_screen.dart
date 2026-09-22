@@ -39,8 +39,8 @@ class FastActionItem {
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
     super.key,
-    this.initialNetWorth = 231150.75,
-    this.sevenDaysSpend = const [450.0, 1200.0, 850.0, 2400.0, 1100.0, 3100.0, 1950.0],
+    this.initialNetWorth = 0.0,
+    this.sevenDaysSpend = const [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     this.forceShowTour = false,
     this.disableTour = false,
   });
@@ -57,6 +57,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final TransactionRepository _repository = TransactionRepositoryImpl();
   List<TransactionModel> _recentTransactions = [];
+  double _calculatedNetWorth = 0.0;
+  List<double> _calculatedSevenDaysSpend = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
   bool _isLoading = true;
   bool _showTour = false;
 
@@ -68,6 +70,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _calculatedNetWorth = widget.initialNetWorth;
+    _calculatedSevenDaysSpend = List.from(widget.sevenDaysSpend);
     _loadRecentTransactions();
     _checkTourStatus();
   }
@@ -89,10 +93,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _loadRecentTransactions() async {
-    final List<TransactionModel> list = await _repository.getTransactions();
+    final List<TransactionModel> list = await _repository.getTransactions(limit: 500);
+
+    // Calculate dynamic net worth and 7-day spend
+    double income = 0.0;
+    double expense = 0.0;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final List<double> spendPerDay = List.filled(7, 0.0);
+
+    for (final txn in list) {
+      if (txn.flow == TransactionFlow.income) {
+        income += txn.amount;
+      } else if (txn.flow == TransactionFlow.expense) {
+        expense += txn.amount;
+      }
+
+      final txnDay = DateTime(txn.date.year, txn.date.month, txn.date.day);
+      final daysDiff = today.difference(txnDay).inDays;
+      if (daysDiff >= 0 && daysDiff < 7 && txn.flow == TransactionFlow.expense) {
+        // daysDiff = 0 means today (slot 6), daysDiff = 6 means 6 days ago (slot 0)
+        final slot = 6 - daysDiff;
+        spendPerDay[slot] += txn.amount;
+      }
+    }
+
+    final double computedNetWorth = widget.initialNetWorth != 0.0
+        ? widget.initialNetWorth
+        : (income - expense);
+
+    final bool allZerosWidget = widget.sevenDaysSpend.every((v) => v == 0.0);
+    final List<double> finalSpend = allZerosWidget ? spendPerDay : widget.sevenDaysSpend;
+
     if (mounted) {
       setState(() {
         _recentTransactions = list.take(5).toList();
+        _calculatedNetWorth = computedNetWorth;
+        _calculatedSevenDaysSpend = finalSpend;
         _isLoading = false;
       });
     }
@@ -184,7 +221,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double total7Days = widget.sevenDaysSpend.fold(0.0, (sum, val) => sum + val);
+    final double total7Days = _calculatedSevenDaysSpend.fold(0.0, (sum, val) => sum + val);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardBg = theme.cardTheme.color ?? (isDark ? AppColors.darkCard : AppColors.lightCard);
@@ -283,7 +320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             const SizedBox(height: 6),
                             RollingCounter(
-                              value: widget.initialNetWorth,
+                              value: _calculatedNetWorth,
                               style: theme.textTheme.displayMedium?.copyWith(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w800,
@@ -376,8 +413,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     lineBarsData: [
                                       LineChartBarData(
                                         spots: List.generate(
-                                          widget.sevenDaysSpend.length,
-                                          (i) => FlSpot(i.toDouble(), widget.sevenDaysSpend[i]),
+                                          _calculatedSevenDaysSpend.length,
+                                          (i) => FlSpot(i.toDouble(), _calculatedSevenDaysSpend[i]),
                                         ),
                                         isCurved: true,
                                         curveSmoothness: 0.35,

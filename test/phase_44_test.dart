@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:finance_app/features/accounts/data/models/account.dart';
 import 'package:finance_app/features/categories/data/models/category.dart';
@@ -35,10 +37,22 @@ void main() {
     setUp(() {
       mockShareBridge = MockShareBridge();
       CsvExporter.setShareBridgeForTesting(mockShareBridge);
+
+      const MethodChannel channel = MethodChannel('plugins.flutter.io/path_provider');
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+        if (methodCall.method == 'getTemporaryDirectory') {
+          return Directory.systemTemp.path;
+        }
+        return null;
+      });
     });
 
     tearDown(() {
       CsvExporter.setShareBridgeForTesting(null);
+      const MethodChannel channel = MethodChannel('plugins.flutter.io/path_provider');
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, null);
     });
 
     test('CSV header matches required columns specification', () {
@@ -140,7 +154,7 @@ void main() {
 
       expect(result.status, ShareResultStatus.success);
       expect(mockShareBridge.sharedFiles.length, 1);
-      expect(mockShareBridge.sharedFiles.first.name, 'statement.csv');
+      expect(mockShareBridge.sharedFiles.first.name, contains('statement.csv'));
       expect(mockShareBridge.sharedSubject, 'Monthly Ledger');
 
       final String sharedContent = utf8.decode(await mockShareBridge.sharedFiles.first.readAsBytes());

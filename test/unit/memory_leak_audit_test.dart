@@ -4,6 +4,8 @@ import 'package:finance_app/core/localization/locale_provider.dart';
 import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:finance_app/core/widgets/receipt_thumbnail_view.dart';
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
+import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
+import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:finance_app/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -79,6 +81,18 @@ void main() {
   group('Phase 57: ListView itemExtent Performance & Layout Audit', () {
     testWidgets('TransactionsScreen ListView has itemExtent configured for O(1) scroll indexing',
         (WidgetTester tester) async {
+      await TransactionRepositoryImpl().addTransaction(
+        TransactionModel(
+          id: 'txn-audit',
+          title: 'Salary Deposit',
+          amount: 50000.0,
+          flow: TransactionFlow.income,
+          category: 'Income',
+          date: DateTime.now(),
+          accountId: 'acc-1',
+        ),
+      );
+
       await tester.pumpWidget(
         const MaterialApp(
           home: TransactionsScreen(),

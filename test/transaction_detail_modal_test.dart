@@ -5,10 +5,24 @@ import 'package:finance_app/features/transactions/presentation/widgets/transacti
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
+
 void main() {
   group('Phase 4: Transaction Detail Modal & History Action Tests', () {
     testWidgets('Tapping a transaction tile opens bottom sheet with receipt metrics & actions',
         (WidgetTester tester) async {
+      await TransactionRepositoryImpl().addTransaction(
+        TransactionModel(
+          id: 'txn-salary',
+          title: 'Salary Deposit',
+          amount: 75000.0,
+          flow: TransactionFlow.income,
+          category: 'Income',
+          date: DateTime.now(),
+          accountId: 'acc-1',
+        ),
+      );
+
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.dark,

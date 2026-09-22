@@ -2,40 +2,7 @@ import 'package:finance_app/features/subscriptions/domain/models/subscription_mo
 import 'package:finance_app/features/subscriptions/domain/repositories/subscription_repository.dart';
 
 class SubscriptionRepositoryImpl implements SubscriptionRepository {
-  final List<SubscriptionModel> _subscriptions = [
-    SubscriptionModel(
-      id: 'sub-1',
-      name: 'Netflix Premium (4K)',
-      amount: 649.00,
-      cycle: BillingCycle.monthly,
-      nextBillingDate: DateTime.now().add(const Duration(days: 8)),
-      categoryName: 'Entertainment',
-    ),
-    SubscriptionModel(
-      id: 'sub-2',
-      name: 'Spotify Family',
-      amount: 179.00,
-      cycle: BillingCycle.monthly,
-      nextBillingDate: DateTime.now().add(const Duration(days: 14)),
-      categoryName: 'Entertainment',
-    ),
-    SubscriptionModel(
-      id: 'sub-3',
-      name: 'GitHub Copilot / Cloud',
-      amount: 820.00,
-      cycle: BillingCycle.monthly,
-      nextBillingDate: DateTime.now().add(const Duration(days: 21)),
-      categoryName: 'Development',
-    ),
-    SubscriptionModel(
-      id: 'sub-4',
-      name: 'Amazon Prime Annual',
-      amount: 1499.00,
-      cycle: BillingCycle.yearly,
-      nextBillingDate: DateTime.now().add(const Duration(days: 160)),
-      categoryName: 'Shopping',
-    ),
-  ];
+  final List<SubscriptionModel> _subscriptions = [];
 
   @override
   Future<List<SubscriptionModel>> getSubscriptions() async {

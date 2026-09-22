@@ -7,20 +7,23 @@ import 'package:flutter/material.dart';
 
 /// Screen listing all category envelope budgets with progress tracking.
 class BudgetsScreen extends StatefulWidget {
-  const BudgetsScreen({super.key});
+  const BudgetsScreen({super.key, this.repository});
+
+  final BudgetRepository? repository;
 
   @override
   State<BudgetsScreen> createState() => _BudgetsScreenState();
 }
 
 class _BudgetsScreenState extends State<BudgetsScreen> {
-  final BudgetRepository _repository = InMemoryBudgetRepository();
+  late final BudgetRepository _repository;
   List<BudgetModel> _budgets = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _repository = widget.repository ?? InMemoryBudgetRepository();
     _loadBudgets();
   }
 

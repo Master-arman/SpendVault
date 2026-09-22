@@ -3,6 +3,7 @@ import 'package:finance_app/features/categories/domain/models/category_model.dar
 import 'package:finance_app/features/categories/presentation/screens/categories_screen.dart';
 import 'package:finance_app/features/categories/presentation/screens/category_detail_screen.dart';
 import 'package:finance_app/features/transactions/data/repositories/transaction_repository_impl.dart';
+import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -44,6 +45,17 @@ void main() {
       );
 
       final repo = TransactionRepositoryImpl();
+      await repo.addTransaction(
+        TransactionModel(
+          id: 'txn-food',
+          title: 'Nature\'s Basket Supermarket',
+          amount: 1420.0,
+          flow: TransactionFlow.expense,
+          category: 'Food & Dining',
+          date: DateTime.now(),
+          accountId: 'acc-1',
+        ),
+      );
 
       await tester.pumpWidget(
         MaterialApp(

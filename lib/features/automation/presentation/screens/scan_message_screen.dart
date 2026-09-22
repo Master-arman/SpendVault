@@ -1,6 +1,7 @@
 import 'package:finance_app/core/theme/app_colors.dart';
 import 'package:finance_app/core/theme/theme_toggle_button.dart';
 import 'package:finance_app/features/automation/domain/bank_sms_parser.dart';
+import 'package:finance_app/features/automation/domain/sms_inbox_reader_service.dart';
 import 'package:finance_app/features/automation/presentation/widgets/confirm_transaction_dialog.dart';
 import 'package:finance_app/features/transactions/domain/models/transaction_model.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,10 @@ class ScanMessageScreen extends StatefulWidget {
 class _ScanMessageScreenState extends State<ScanMessageScreen> {
   late final TextEditingController _messageController;
   final BankSmsParser _smsParser = const BankSmsParser();
+  final SmsInboxReaderService _smsReaderService = SmsInboxReaderService();
+  bool _isSyncingInbox = false;
 
-  // Preset sample SMS messages for testing and instant parsing
-  final List<Map<String, String>> _sampleMessages = [
+  final List<Map<String, String>> _sampleMessages = const [
     {
       'title': 'Salary Deposit',
       'category': 'Income',
@@ -53,9 +55,143 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
   void initState() {
     super.initState();
     _messageController = TextEditingController(
-      text: widget.initialMessage ??
-          'Dear Customer, INR 75,000.00 credited to your A/C ending XX1234 on 21-Sep-2026 by Tech Corp Payroll.',
+      text: widget.initialMessage ?? '',
     );
+  }
+
+  Future<void> _syncInternalSmsInbox() async {
+    setState(() => _isSyncingInbox = true);
+    try {
+      final result = await _smsReaderService.syncSmsInbox(limit: 300);
+      if (!mounted) return;
+      setState(() => _isSyncingInbox = false);
+
+      if (result.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.errorMessage!),
+            backgroundColor: AppColors.expenseRed,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        builder: (ctx) {
+          final isDark = Theme.of(ctx).brightness == Brightness.dark;
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(ctx).colorScheme.outline.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.successGreen.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check_circle_rounded, color: AppColors.successGreen, size: 28),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'SMS Inbox Sync Complete',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(ctx).colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Read ${result.totalSmsRead} messages • Found ${result.transactionsParsed} bank alerts',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF131A2A) : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _SyncStatCol(label: 'Total Scanned', value: '${result.totalSmsRead}'),
+                        _SyncStatCol(label: 'Bank Alerts', value: '${result.transactionsParsed}'),
+                        _SyncStatCol(
+                          label: 'Imported New',
+                          value: '${result.transactionsAdded}',
+                          valueColor: AppColors.accentCyan,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      if (result.transactionsAdded > 0) {
+                        Navigator.pop(context, true);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentCyan,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    child: Text(
+                      result.transactionsAdded > 0 ? 'View Transactions (${result.transactionsAdded})' : 'Done',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSyncingInbox = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to read messages: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -96,31 +232,18 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
         smsBody.toLowerCase().contains('received');
 
     String detectedTitle = 'Bank Transaction';
-    // 1. Check known sample presets first
-    for (final sample in _sampleMessages) {
-      if (smsBody.toLowerCase().contains(sample['title']!.toLowerCase()) ||
-          smsBody == sample['sms'] ||
-          (sample['title'] == 'Whole Foods Market' && smsBody.toLowerCase().contains('whole foods'))) {
-        detectedTitle = sample['title']!;
-        break;
-      }
-    }
-
-    // 2. Fallback to domain parser or keyword heuristics
-    if (detectedTitle == 'Bank Transaction') {
-      if (parsed != null && parsed.merchant != null && parsed.merchant!.isNotEmpty) {
-        detectedTitle = parsed.merchant!;
-      } else if (smsBody.toLowerCase().contains('salary')) {
-        detectedTitle = 'Salary Deposit';
-      } else if (smsBody.toLowerCase().contains('whole foods')) {
-        detectedTitle = 'Whole Foods Market';
-      } else if (smsBody.toLowerCase().contains('swiggy')) {
-        detectedTitle = 'Swiggy';
-      } else if (smsBody.toLowerCase().contains('uber')) {
-        detectedTitle = 'Uber Ride';
-      } else if (smsBody.toLowerCase().contains('apple')) {
-        detectedTitle = 'Apple Store';
-      }
+    if (parsed != null && parsed.merchant != null && parsed.merchant!.isNotEmpty) {
+      detectedTitle = parsed.merchant!;
+    } else if (smsBody.toLowerCase().contains('salary')) {
+      detectedTitle = 'Salary Deposit';
+    } else if (smsBody.toLowerCase().contains('whole foods')) {
+      detectedTitle = 'Whole Foods Market';
+    } else if (smsBody.toLowerCase().contains('swiggy')) {
+      detectedTitle = 'Swiggy';
+    } else if (smsBody.toLowerCase().contains('uber')) {
+      detectedTitle = 'Uber Ride';
+    } else if (smsBody.toLowerCase().contains('apple')) {
+      detectedTitle = 'Apple Store';
     }
 
     // Clean any trailing date/info artifacts
@@ -172,9 +295,14 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
       key: const Key('scan_message_screen'),
       appBar: AppBar(
         title: const Text('Scan Message / SMS'),
-        actions: const [
-          ThemeToggleButton(),
-          SizedBox(width: 8),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sync_rounded),
+            tooltip: 'Sync Internal SMS',
+            onPressed: _isSyncingInbox ? null : _syncInternalSmsInbox,
+          ),
+          const ThemeToggleButton(),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -182,38 +310,108 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Intro Card
+            // Internal Device SMS Auto-Sync Hero Banner
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: AppColors.accentCyan.withValues(alpha: 0.1),
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.accentCyan.withValues(alpha: 0.15),
+                    AppColors.accentIndigo.withValues(alpha: 0.08),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.accentCyan.withValues(alpha: 0.3),
+                  color: AppColors.accentCyan.withValues(alpha: 0.4),
                 ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.sms_rounded, color: AppColors.accentCyan, size: 28),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Text(
-                      'Paste an SMS text alert or tap a banking preset below to extract amount, merchant, and category with real-time review.',
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.4,
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentCyan.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
                     ),
+                    child: const Icon(Icons.mark_email_read_rounded, color: AppColors.accentCyan, size: 22),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Read Phone Messages',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                        Text(
+                          'Auto-import bank SMS directly from device',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    key: const Key('button_sync_sms_inbox'),
+                    onPressed: _isSyncingInbox ? null : _syncInternalSmsInbox,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.accentCyan,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: _isSyncingInbox
+                        ? const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                          )
+                        : const Text(
+                            'Sync SMS',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                          ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 16),
+
+            // Manual SMS Paste Section Divider
+            Row(
+              children: [
+                Expanded(child: Divider(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'OR PASTE / PARSE MANUALLY',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(color: theme.colorScheme.outline.withValues(alpha: 0.2))),
+              ],
             ),
             const SizedBox(height: 20),
 
             // SMS Text Input Area
             Text(
-              'SMS / Notification Message Body',
+              'Message Content',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -239,7 +437,7 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
                   height: 1.4,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Paste SMS message here (e.g. INR 1,420.00 debited at Whole Foods Market...)',
+                  hintText: 'Paste any SMS message here (e.g. INR 1,420.00 debited from A/C XX4321...)',
                   hintStyle: TextStyle(
                     fontSize: 13,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
@@ -256,8 +454,8 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
               key: const Key('parse_message_button'),
               onPressed: () => _parseAndReview(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.accentCyan,
-                foregroundColor: Colors.black,
+                backgroundColor: AppColors.accentIndigo,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -266,7 +464,7 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
               ),
               icon: const Icon(Icons.document_scanner_rounded, size: 20),
               label: const Text(
-                'Parse & Review Transaction',
+                'Parse Pasted Message',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
             ),
@@ -352,3 +550,41 @@ class _ScanMessageScreenState extends State<ScanMessageScreen> {
     );
   }
 }
+
+class _SyncStatCol extends StatelessWidget {
+  const _SyncStatCol({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+            color: valueColor ?? theme.colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
