@@ -8,6 +8,8 @@ import 'package:finance_app/features/transactions/domain/models/transaction_mode
 import 'package:finance_app/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_detail_modal.dart';
 import 'package:finance_app/features/transactions/presentation/widgets/transaction_tile.dart';
+import 'package:finance_app/shared/widgets/empty_state_view.dart';
+import 'package:finance_app/shared/widgets/shimmer_loading.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsScreen extends StatefulWidget {
@@ -89,28 +91,42 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
-          : ListView.builder(
-              itemExtent: 82.0,
-              padding: const EdgeInsets.all(20),
-              itemCount: _transactions.length,
-              itemBuilder: (BuildContext context, int index) {
-                final txn = _transactions[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: AnimationConfiguration.staggeredList(
-                    position: index,
-                    delay: const Duration(milliseconds: 40),
-                    duration: const Duration(milliseconds: 320),
-                    child: TransactionTile(
-                      transaction: txn,
-                      onTap: () => _openTransactionDetail(txn),
-                    ),
-                  ),
-                );
-              },
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const TransactionListSkeleton(itemCount: 6);
+    }
+
+    if (_transactions.isEmpty) {
+      return EmptyStateView.transactions(
+        onAddTransaction: () {
+          Navigator.of(context).pushNamed(AppConstants.scanMessageRoute);
+        },
+      );
+    }
+
+    return ListView.builder(
+      itemExtent: 82.0,
+      padding: const EdgeInsets.all(20),
+      itemCount: _transactions.length,
+      itemBuilder: (BuildContext context, int index) {
+        final txn = _transactions[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: AnimationConfiguration.staggeredList(
+            position: index,
+            delay: const Duration(milliseconds: 40),
+            duration: const Duration(milliseconds: 320),
+            child: TransactionTile(
+              transaction: txn,
+              onTap: () => _openTransactionDetail(txn),
             ),
+          ),
+        );
+      },
     );
   }
 }

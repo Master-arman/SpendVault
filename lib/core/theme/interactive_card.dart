@@ -106,7 +106,7 @@ class _InteractiveCardState extends State<InteractiveCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final defaultBg = theme.cardTheme.color ?? (isDark ? AppColors.surfaceCard : AppColors.lightCard);
+    final defaultBg = theme.cardTheme.color ?? (isDark ? AppColors.darkCard : AppColors.lightCard);
     final defaultBorder = theme.colorScheme.outline;
 
     final effectiveRadius = widget.borderRadius ?? BorderRadius.circular(16);

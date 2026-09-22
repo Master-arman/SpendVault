@@ -261,17 +261,22 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.surfaceCard,
+                color: Theme.of(context).cardTheme.color ??
+                    (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkCard
+                        : AppColors.lightCard),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
                   color: _focusNode.hasFocus
                       ? AppColors.accentIndigo
-                      : AppColors.borderStroke,
+                      : (Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder),
                   width: 1.2,
                 ),
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x11000000),
+                    color: Color(0x0D000000),
                     blurRadius: 8,
                     offset: Offset(0, 3),
                   ),
@@ -468,11 +473,15 @@ class _SearchScreenState extends State<SearchScreen> {
       itemBuilder: (context, index) {
         final SearchResultItem item = _results[index];
 
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
           decoration: BoxDecoration(
-            color: AppColors.surfaceCard,
+            color: Theme.of(context).cardTheme.color ??
+                (isDark ? AppColors.darkCard : AppColors.lightCard),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.borderStroke),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            ),
           ),
           padding: const EdgeInsets.all(14),
           child: Row(

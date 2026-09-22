@@ -20,10 +20,11 @@ class AppColors {
   static const Color lightTextSecondary = Color(0xFF475569);
   static const Color lightTextMuted = Color(0xFF94A3B8);
 
-  // Consumer Product Design System - Dark Theme (Matte Dark Slate)
-  static const Color darkBackground = Color(0xFF0F172A);
-  static const Color darkCard = Color(0xFF1E293B);
-  static const Color darkBorder = Color(0xFF334155);
+  // Consumer Product Design System - Dark Theme (Soft Dark #0F1117 with subtle borders)
+  static const Color darkBackground = Color(0xFF0F1117);
+  static const Color darkCard = Color(0xFF161922);
+  static const Color darkBorder = Color(0x14FFFFFF); // Border.all(color: Colors.white.withOpacity(0.08))
+  static const Color darkBorderSolid = Color(0xFF222738);
   static const Color darkPrimary = Color(0xFF14B8A6);
   static const Color darkTextPrimary = Color(0xFFF8FAFC);
   static const Color darkTextSecondary = Color(0xFF94A3B8);

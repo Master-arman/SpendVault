@@ -12,6 +12,8 @@ import 'package:finance_app/features/transactions/presentation/widgets/transacti
 import 'package:finance_app/features/reports/presentation/widgets/export_report_bottom_sheet.dart';
 import 'package:finance_app/features/tour/domain/feature_tour_service.dart';
 import 'package:finance_app/features/tour/presentation/widgets/feature_spotlight_overlay.dart';
+import 'package:finance_app/shared/widgets/empty_state_view.dart';
+import 'package:finance_app/shared/widgets/shimmer_loading.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -183,6 +185,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final double total7Days = widget.sevenDaysSpend.fold(0.0, (sum, val) => sum + val);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardBg = theme.cardTheme.color ?? (isDark ? AppColors.darkCard : AppColors.lightCard);
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
 
     return Stack(
       children: [
@@ -193,15 +199,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               SliverAppBar(
                 pinned: true,
                 expandedHeight: 180,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.85),
+                backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.85),
                 elevation: 0,
                 actions: [
                   IconButton(
                     key: _notificationToggleKey,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.notifications_active_outlined,
-                      key: Key('feature_tour_notification_toggle'),
-                      color: AppColors.textPrimary,
+                      key: const Key('feature_tour_notification_toggle'),
+                      color: theme.colorScheme.onSurface,
                     ),
                     tooltip: 'Notification Consent & Auto-Sync',
                     onPressed: () {
@@ -222,12 +228,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             end: Alignment.bottomCenter,
                             colors: [
                               AppColors.accentIndigo.withValues(alpha: 0.12),
-                              Theme.of(context).scaffoldBackgroundColor,
+                              theme.scaffoldBackgroundColor,
                             ],
                           ),
                           border: Border(
                             bottom: BorderSide(
-                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                              color: borderColor,
                               width: 1,
                             ),
                           ),
@@ -240,13 +246,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   'AGGREGATED NET WORTH',
-                                  style: TextStyle(
+                                  style: theme.textTheme.labelSmall?.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 0.8,
-                                    color: AppColors.textMuted,
+                                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
                                   ),
                                 ),
                                 Container(
@@ -278,10 +284,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 6),
                             RollingCounter(
                               value: widget.initialNetWorth,
-                              style: const TextStyle(
+                              style: theme.textTheme.displayMedium?.copyWith(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
+                                color: theme.colorScheme.onSurface,
+                                letterSpacing: -1,
+                              ) ?? const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w800,
                                 letterSpacing: -1,
                               ),
                             ),
@@ -310,9 +320,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           key: _analyticsDrillDownKey,
                           padding: const EdgeInsets.all(18),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceCard,
+                            color: cardBg,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.borderStroke),
+                            border: Border.all(color: borderColor),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,20 +333,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
+                                      Text(
                                         '7-Day Outflow Sparkline',
-                                        style: TextStyle(
+                                        style: theme.textTheme.titleMedium?.copyWith(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w700,
-                                          color: AppColors.textPrimary,
+                                          color: theme.colorScheme.onSurface,
                                         ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         'Total: ${CurrencyFormatter.format(total7Days)}',
-                                        style: const TextStyle(
+                                        style: theme.textTheme.bodySmall?.copyWith(
                                           fontSize: 12,
-                                          color: AppColors.textMuted,
+                                          color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
                                         ),
                                       ),
                                     ],
@@ -392,16 +402,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              const Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('D-6', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('D-5', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('D-4', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('D-3', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('D-2', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('Yesterday', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                  Text('Today', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.indigoLight)),
+                                  Text('D-6', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  Text('D-5', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  Text('D-4', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  Text('D-3', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  Text('D-2', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  Text('Yesterday', style: TextStyle(fontSize: 10, color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                                  const Text('Today', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.indigoLight)),
                                 ],
                               ),
                             ],
@@ -411,12 +421,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(height: 24),
 
                       // Fast Action Carousel (Add Expense, Transfer, Scan SMS, Export Report)
-                      const Text(
+                      Text(
                         'Fast Actions',
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -437,8 +447,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 onTap: action.onTap,
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
                                 borderRadius: BorderRadius.circular(16),
-                                backgroundColor: AppColors.surfaceCard,
-                                border: Border.all(color: AppColors.borderStroke),
+                                backgroundColor: cardBg,
+                                border: Border.all(color: borderColor),
                                 hoverBorder: Border.all(color: action.color),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -457,10 +467,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: theme.textTheme.labelMedium?.copyWith(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary,
+                                        color: theme.colorScheme.onSurface,
                                       ),
                                     ),
                                   ],
@@ -476,12 +486,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Recent Activity',
-                            style: TextStyle(
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           TextButton(
@@ -500,17 +510,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      _isLoading
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.accentIndigo))
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _recentTransactions.length,
-                              separatorBuilder: (context, index) => const SizedBox(height: 10),
-                              itemBuilder: (context, index) {
-                                return TransactionTile(transaction: _recentTransactions[index]);
-                              },
-                            ),
+                      _buildRecentTransactionsSection(),
                     ],
                   ),
                 ),
@@ -539,6 +539,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildRecentTransactionsSection() {
+    if (_isLoading) {
+      return const TransactionListSkeleton(itemCount: 3, padding: EdgeInsets.zero);
+    }
+
+    if (_recentTransactions.isEmpty) {
+      return EmptyStateView.transactions(
+        onAddTransaction: () {
+          Navigator.of(context).pushNamed(AppConstants.scanMessageRoute);
+        },
+      );
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _recentTransactions.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      itemBuilder: (context, index) {
+        return TransactionTile(transaction: _recentTransactions[index]);
+      },
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Standardized modular card component used across the application.
 /// Encapsulates responsive background colors, border radius, customizable padding,
-/// border strokes, and tactile tap/hover interactions.
+/// subtle border strokes, elevation, and tactile InkRipple tap interactions.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
@@ -39,11 +39,49 @@ class AppCard extends StatelessWidget {
 
     final effectiveRadius = borderRadius ?? BorderRadius.circular(16);
     final effectiveBg = backgroundColor ??
-        (isDark ? const Color(0xFF131A2A) : Colors.white);
+        (isDark ? AppColors.darkCard : AppColors.lightCard);
     final effectiveBorder = borderColor ??
-        (isDark ? AppColors.borderStroke.withValues(alpha: 0.3) : const Color(0xFFE2E8F0));
+        (isDark ? AppColors.darkBorder : AppColors.lightBorder);
 
-    final cardContent = Container(
+    final cardShape = RoundedRectangleBorder(
+      borderRadius: effectiveRadius,
+      side: BorderSide(color: effectiveBorder, width: borderWidth),
+    );
+
+    if (onTap != null) {
+      return Container(
+        width: width,
+        height: height,
+        margin: margin,
+        decoration: BoxDecoration(
+          borderRadius: effectiveRadius,
+          boxShadow: elevation > 0
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
+                    blurRadius: elevation * 4,
+                    offset: Offset(0, elevation * 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Material(
+          color: effectiveBg,
+          shape: cardShape,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            splashFactory: InkRipple.splashFactory,
+            onTap: onTap,
+            child: Padding(
+              padding: padding,
+              child: child,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
       width: width,
       height: height,
       margin: margin,
@@ -64,18 +102,5 @@ class AppCard extends StatelessWidget {
       ),
       child: child,
     );
-
-    if (onTap != null) {
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: effectiveRadius,
-          child: cardContent,
-        ),
-      );
-    }
-
-    return cardContent;
   }
 }

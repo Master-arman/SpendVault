@@ -17,96 +17,122 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final bool isIncome = transaction.isIncome;
     final DateFormat formatter = DateFormat('MMM d, h:mm a');
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+    final Color cardColor = theme.cardTheme.color ??
+        (isDark ? AppColors.darkCard : AppColors.lightCard);
+    final Color borderColor = isDark
+        ? AppColors.darkBorder
+        : AppColors.lightBorder;
+
+    return Material(
+      color: cardColor,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outline.withValues(alpha: 0.25)),
+        side: BorderSide(color: borderColor, width: 1),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isIncome
-                        ? AppColors.successGreenSoft
-                        : AppColors.expenseRedSoft,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    isIncome
-                        ? Icons.arrow_downward_rounded
-                        : Icons.arrow_upward_rounded,
-                    color: isIncome ? AppColors.successGreen : AppColors.expenseRed,
-                    size: 18,
-                  ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        splashFactory: InkRipple.splashFactory,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isIncome
+                      ? AppColors.successGreenSoft
+                      : AppColors.expenseRedSoft,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        transaction.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onSurface,
-                        ),
+                child: Icon(
+                  isIncome
+                      ? Icons.arrow_downward_rounded
+                      : Icons.arrow_upward_rounded,
+                  color: isIncome ? AppColors.successGreen : AppColors.expenseRed,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      transaction.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
                       ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              formatter.format(transaction.date),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                              ),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            formatter.format(transaction.date),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 12,
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
                             ),
                           ),
-                          if (transaction.isAutomated) ...[
-                            const SizedBox(width: 6),
-                            Text('•', style: TextStyle(color: theme.colorScheme.onSurface.withValues(alpha: 0.4), fontSize: 10)),
-                            const SizedBox(width: 6),
-                            const Icon(Icons.bolt_rounded, size: 12, color: AppColors.indigoLight),
-                            const SizedBox(width: 2),
-                            const Text('Auto', style: TextStyle(fontSize: 11, color: AppColors.indigoLight, fontWeight: FontWeight.w500)),
-                          ],
+                        ),
+                        if (transaction.isAutomated) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            '•',
+                            style: TextStyle(
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
+                              fontSize: 10,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.bolt_rounded,
+                            size: 12,
+                            color: AppColors.indigoLight,
+                          ),
+                          const SizedBox(width: 2),
+                          const Text(
+                            'Auto',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.indigoLight,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  CurrencyFormatter.format(
-                    transaction.amount,
-                    showSign: true,
-                  ),
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: isIncome ? AppColors.successGreen : theme.colorScheme.onSurface,
-                  ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                CurrencyFormatter.format(
+                  isIncome ? transaction.amount : -transaction.amount.abs(),
+                  showSign: true,
                 ),
-              ],
-            ),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: isIncome ? AppColors.successGreen : theme.colorScheme.onSurface,
+                ),
+              ),
+            ],
           ),
         ),
       ),
