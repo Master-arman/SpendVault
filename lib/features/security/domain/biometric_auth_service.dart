@@ -54,10 +54,12 @@ class BiometricAuthService {
     isLocked.value = true;
   }
 
-  /// Marks the app as unlocked. Called internally after a successful auth.
-  void _unlock() {
+  /// Marks the app as unlocked.
+  void unlock() {
     isLocked.value = false;
   }
+
+  void _unlock() => unlock();
 
   // ── Authentication ──────────────────────────────────────────────────────────
 
@@ -76,20 +78,21 @@ class BiometricAuthService {
 
     try {
       final bool didAuthenticate = await _auth.authenticate(
-        localizedReason: 'Unlock your financial ledger',
+        localizedReason: 'Unlock SpendVault to access your finances',
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
+          useErrorDialogs: true,
         ),
       );
 
       if (didAuthenticate) {
-        _unlock();
+        unlock();
         return AuthResult.success;
       } else {
         return AuthResult.failure;
       }
-    } on Exception {
+    } catch (_) {
       return AuthResult.error;
     }
   }

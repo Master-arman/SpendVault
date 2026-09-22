@@ -274,7 +274,7 @@ class GoogleDriveBackupService {
     Map<String, String>? appProperties,
   }) async {
     final String dateStr = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-    final String targetName = filename ?? 'financex_drive_backup_$dateStr.enc';
+    final String targetName = filename ?? 'spendvault_drive_backup_$dateStr.enc';
     final String finalName = targetName.endsWith('.enc') ? targetName : '$targetName.enc';
 
     return await _clientBridge.uploadFile(

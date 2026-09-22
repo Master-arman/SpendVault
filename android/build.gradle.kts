@@ -18,6 +18,26 @@ subprojects {
 subprojects {
     val p = this
     if (p.name != "app") {
+        p.plugins.withId("com.android.library") {
+            try {
+                val androidExt = p.extensions.findByName("android")
+                if (androidExt != null) {
+                    val getSourceSets = androidExt.javaClass.getMethod("getSourceSets")
+                    val sourceSets = getSourceSets.invoke(androidExt)
+                    if (sourceSets is org.gradle.api.NamedDomainObjectContainer<*>) {
+                        val mainSourceSet = sourceSets.findByName("main")
+                        if (mainSourceSet != null) {
+                            val javaMethod = mainSourceSet.javaClass.methods.firstOrNull { it.name == "getJava" || it.name == "java" }
+                            val javaObj = javaMethod?.invoke(mainSourceSet)
+                            val srcDirMethod = javaObj?.javaClass?.methods?.firstOrNull { it.name == "srcDir" && it.parameterTypes.size == 1 }
+                            srcDirMethod?.invoke(javaObj, "src/main/kotlin")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Ignore
+            }
+        }
         p.afterEvaluate {
             val androidExt = p.extensions.findByName("android")
             if (androidExt != null) {

@@ -345,49 +345,60 @@ class _DashboardShellState extends State<DashboardShell> {
     final theme = Theme.of(context);
     final navIndex = _currentIndex > 3 ? 4 : _currentIndex;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: _buildDrawer(theme),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: theme.bottomNavigationBarTheme.backgroundColor ?? theme.scaffoldBackgroundColor,
-          border: Border(
-            top: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.25),
-              width: 1,
+    return PopScope(
+      canPop: _currentIndex == 0,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (didPop) return;
+        if (_currentIndex != 0) {
+          setState(() {
+            _currentIndex = 0;
+          });
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: _buildDrawer(theme),
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: theme.bottomNavigationBarTheme.backgroundColor ?? theme.scaffoldBackgroundColor,
+            border: Border(
+              top: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: 0.25),
+                width: 1,
+              ),
             ),
           ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: navIndex,
-          type: BottomNavigationBarType.fixed,
-          onTap: _onTabTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.space_dashboard_rounded),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long_rounded),
-              label: 'Ledger',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet_rounded),
-              label: 'Accounts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.insights_rounded),
-              label: 'Analytics',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view_rounded),
-              label: 'More',
-            ),
-          ],
+          child: BottomNavigationBar(
+            currentIndex: navIndex,
+            type: BottomNavigationBarType.fixed,
+            onTap: _onTabTapped,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.space_dashboard_rounded),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.receipt_long_rounded),
+                label: 'Ledger',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_balance_wallet_rounded),
+                label: 'Accounts',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.insights_rounded),
+                label: 'Analytics',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.grid_view_rounded),
+                label: 'More',
+              ),
+            ],
+          ),
         ),
       ),
     );

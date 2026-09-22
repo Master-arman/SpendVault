@@ -1,3 +1,5 @@
+import 'package:finance_app/core/theme/app_theme.dart';
+import 'package:finance_app/core/theme/theme_provider.dart';
 import 'package:finance_app/features/security/domain/biometric_auth_service.dart';
 import 'package:finance_app/features/security/presentation/screens/lock_screen.dart';
 import 'package:flutter/material.dart';
@@ -94,9 +96,15 @@ class _AppLockObserverState extends State<AppLockObserver>
         // When locked, render LockScreen on top of (but replacing) the tree so
         // no app content is visible in the task switcher thumbnail.
         if (locked) {
-          return const MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: LockScreen(),
+          return ValueListenableBuilder<AppThemeType>(
+            valueListenable: ThemeProvider.instance,
+            builder: (BuildContext context, AppThemeType themeType, _) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.getThemeData(themeType),
+                home: const LockScreen(),
+              );
+            },
           );
         }
         return child!;

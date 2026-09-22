@@ -2,7 +2,7 @@
 class AppConstants {
   const AppConstants._();
 
-  static const String appName = 'FinanceX';
+  static const String appName = 'SpendVault';
   static const String appVersion = '1.0.0';
   static const String defaultCurrencySymbol = '₹';
   static const String defaultCurrencyCode = 'INR';

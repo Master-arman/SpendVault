@@ -653,7 +653,7 @@ class BackupService {
 
     final Directory dir = cacheDirectory ?? (await getTemporaryDirectory());
     final String dateStr = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-    final String name = filename ?? 'financex_backup_$dateStr.enc';
+    final String name = filename ?? 'spendvault_backup_$dateStr.enc';
     final String finalName = name.endsWith('.enc') ? name : '$name.enc';
 
     final File file = File('${dir.path}/$finalName');
@@ -667,8 +667,8 @@ class BackupService {
     required String password,
     String? filename,
     Directory? cacheDirectory,
-    String subject = 'FinanceX Encrypted Vault Backup',
-    String text = 'Attached is your AES-256-GCM encrypted FinanceX backup file (.enc).',
+    String subject = 'SpendVault Encrypted Vault Backup',
+    String text = 'Attached is your AES-256-GCM encrypted SpendVault backup file (.enc).',
   }) async {
     final File backupFile = await createEncryptedBackupFile(
       jsonPayload: jsonPayload,

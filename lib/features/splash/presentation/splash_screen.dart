@@ -111,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 const SizedBox(height: 32),
                 const Text(
-                  'FINANCEX',
+                  'SPENDVAULT',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 26,

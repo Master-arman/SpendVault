@@ -169,7 +169,7 @@ class CsvExporter {
     required List<dynamic> transactions,
     String filename = 'transactions_export.csv',
     String currency = AppConstants.defaultCurrencyCode,
-    String subject = 'FinanceX Transaction Ledger Export',
+    String subject = 'SpendVault Transaction Ledger Export',
     String? text = 'Attached is your exported financial transaction ledger.',
   }) async {
     final File file = await writeCsvFile(

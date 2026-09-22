@@ -117,7 +117,7 @@ void main() {
   group('App Widget Smoke Test', () {
     testWidgets('FinanceApp renders SplashScreen initially', (WidgetTester tester) async {
       await tester.pumpWidget(const FinanceApp());
-      expect(find.text('FINANCEX'), findsOneWidget);
+      expect(find.text('SPENDVAULT'), findsOneWidget);
       expect(find.text('Autonomous Wealth Management'), findsOneWidget);
       await tester.pump(const Duration(seconds: 1));
     });

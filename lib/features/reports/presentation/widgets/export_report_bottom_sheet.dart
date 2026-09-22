@@ -91,7 +91,7 @@ class _ExportReportBottomSheetState extends State<ExportReportBottomSheet> {
       final dateStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
       if (_selectedFormat == ExportFormat.pdf) {
-        final filename = 'financex_statement_$dateStr.pdf';
+        final filename = 'spendvault_statement_$dateStr.pdf';
         final file = await PdfStatementGenerator.writePdfFile(
           transactions: records,
           filename: filename,
@@ -106,7 +106,7 @@ class _ExportReportBottomSheetState extends State<ExportReportBottomSheet> {
           );
         }
       } else {
-        final filename = 'financex_transactions_$dateStr.csv';
+        final filename = 'spendvault_transactions_$dateStr.csv';
         final file = await CsvExporter.writeCsvFile(
           transactions: records,
           filename: filename,

@@ -97,129 +97,160 @@ class _LockScreenState extends State<LockScreen>
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const Spacer(flex: 2),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Spacer(flex: 2),
 
-              // ── App Logo / Title ──────────────────────────────────────────
-              _AppLogo(colorScheme: cs),
+                        // ── App Logo / Title ──────────────────────────────────────────
+                        _AppLogo(colorScheme: cs),
 
-              const SizedBox(height: 48),
+                        const SizedBox(height: 36),
 
-              // ── Fingerprint Icon (animated) ───────────────────────────────
-              ScaleTransition(
-                scale: _pulseAnimation,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: cs.primaryContainer,
-                  ),
-                  child: Icon(
-                    Icons.fingerprint_rounded,
-                    size: 56,
-                    color: cs.primary,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // ── Subtitle ──────────────────────────────────────────────────
-              Text(
-                'Locked',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: cs.onSurface,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Authenticate to access your financial ledger',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // ── Error Message ─────────────────────────────────────────────
-              if (_errorMessage != null) ...<Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: cs.errorContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.warning_amber_rounded,
-                        size: 18,
-                        color: cs.onErrorContainer,
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          _errorMessage!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: cs.onErrorContainer,
+                        // ── Fingerprint Icon (animated) ───────────────────────────────
+                        ScaleTransition(
+                          scale: _pulseAnimation,
+                          child: Container(
+                            width: 90,
+                            height: 90,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: cs.primaryContainer,
+                            ),
+                            child: Icon(
+                              Icons.fingerprint_rounded,
+                              size: 52,
+                              color: cs.primary,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
 
-              const Spacer(flex: 2),
+                        const SizedBox(height: 24),
 
-              // ── Unlock Button ─────────────────────────────────────────────
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: FilledButton.icon(
-                  key: const Key('unlock_button'),
-                  onPressed: _isAuthenticating ? null : _authenticate,
-                  icon: _isAuthenticating
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: cs.onPrimary,
+                        // ── Subtitle ──────────────────────────────────────────────────
+                        Text(
+                          'Locked',
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: cs.onSurface,
                           ),
-                        )
-                      : const Icon(Icons.lock_open_rounded),
-                  label: Text(
-                    _isAuthenticating ? 'Authenticating…' : 'Unlock',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Authenticate to access your financial ledger',
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // ── Error Message ─────────────────────────────────────────────
+                        if (_errorMessage != null) ...<Widget>[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: cs.errorContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.warning_amber_rounded,
+                                  size: 18,
+                                  color: cs.onErrorContainer,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    _errorMessage!,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: cs.onErrorContainer,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+
+                        const Spacer(flex: 2),
+
+                        // ── Unlock Button ─────────────────────────────────────────────
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: FilledButton.icon(
+                            key: const Key('unlock_button'),
+                            onPressed: _isAuthenticating ? null : _authenticate,
+                            icon: _isAuthenticating
+                                ? SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: cs.onPrimary,
+                                    ),
+                                  )
+                                : const Icon(Icons.lock_open_rounded),
+                            label: Text(
+                              _isAuthenticating ? 'Authenticating…' : 'Unlock',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: FilledButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        if (_errorMessage != null) ...<Widget>[
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              key: const Key('skip_unlock_button'),
+                              onPressed: () => _authService.unlock(),
+                              icon: const Icon(Icons.lock_open_rounded, size: 18),
+                              label: const Text('Continue to App'),
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        const SizedBox(height: 16),
+                      ],
                     ),
                   ),
                 ),
               ),
-
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
